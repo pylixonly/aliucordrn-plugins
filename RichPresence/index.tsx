@@ -2,8 +2,9 @@ import { Plugin } from "aliucord/entities";
 import { UserStore, FluxDispatcher/*, "Toasts"*/ } from "aliucord/metro"; // can't import Toasts guhh
 import { before } from "aliucord/utils/patcher";
 import AssetManager from "./AssetManager";
+import LastFMClient, { ActivityTypes } from "./LastFMClient";
 
-interface Activity {
+export interface Activity {
     name: string;
     type: ActivityTypes;
     application_id: string;
@@ -25,21 +26,14 @@ interface Activity {
     }>;
 }
 
-enum ActivityTypes {
-    GAME = 0,
-    STREAMING = 1,
-    LISTENING = 2,
-    WATCHING = 3,
-    COMPETING = 5
-}
-
 export default class RichPresence extends Plugin {
 
     private lastRPC = null;
 
     public init() {
         // const Toasts = (window as any).aliucord.metro.Toasts;
-        this.startExampleRPC();
+        // this.startExampleRPC();
+        this.initLastFm();
     }
 
     public async sendRPC(activity: Activity, assetManager: AssetManager) {
@@ -82,6 +76,25 @@ export default class RichPresence extends Plugin {
         });
 
         this.logger.info(activity ? "Updated presence with params:" : "Stopped presence:", activity);
+    }
+
+    public async initLastFm() {
+        const Toasts = (window as any).aliucord.metro.Toasts;
+        Toasts.open({ content: "Initializing..."});
+
+        const client = new LastFMClient("615322f0047e12aedbc610d9d71f7430", "slyde99", this.logger);
+        await client.stream((track) => {
+            if (!track) {
+                this.updateRPC(null);
+                return;
+            }
+
+            this.sendRPC(client.mapToRPC(track) as any, new AssetManager({
+                applicationId: "463151177836658699",
+                logger: this.logger,
+                options: {}
+            }));
+        })
     }
 
     public startExampleRPC() {
@@ -143,6 +156,8 @@ export default class RichPresence extends Plugin {
             } else {
                 this.logger.warn(`[CLOSE] Connection died`);
             }
+
+            // this.updateRPC(null);
         });
         
         ws.addEventListener("error", e => {
@@ -152,7 +167,7 @@ export default class RichPresence extends Plugin {
 
     public async start() {
         let initialized = false;
-        this.initializeWebSocket();
+        // this.initializeWebSocket();
         
         if (UserStore.getCurrentUser()) {
             this.init();
