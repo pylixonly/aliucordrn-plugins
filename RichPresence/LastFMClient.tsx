@@ -26,7 +26,8 @@ export default class LastFMClient {
     // or when the user stops scrobbling (10 minutes timeout with undefined as an argument)
     async stream(callback) {
         let currentTrack = await this.fetchCurrentScrobble();
-        callback(currentTrack);
+        if (currentTrack.nowPlaying)
+            callback(currentTrack);
 
         const getUnixSecond = () => Date.now() / 1000 | 0;
 
