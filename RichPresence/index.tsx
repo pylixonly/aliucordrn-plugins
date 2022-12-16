@@ -30,7 +30,7 @@ interface Activity {
 
 let Toasts;
 
-export default class Press extends Plugin {
+export default class RichPresence extends Plugin {
     public init() {
         // couldn't import Toasts smh
         Toasts = (window as any).aliucord.metro.Toasts;

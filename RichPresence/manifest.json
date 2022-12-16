@@ -1,9 +1,9 @@
 {
-    "name": "Press",
+    "name": "RichPresence",
     "authors": [{
         "name": "amsyarasyiq",
         "id": "492949202121261067" 
     }],
-    "description": "Presses things :trolley:",
-    "version": "1.0.0"
+    "description": "Enables rich presence",
+    "version": "0.1.0"
 }
