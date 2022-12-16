@@ -110,20 +110,23 @@ export default class RichPresence extends Plugin {
     }
 
     private async initializeWebSocket() {
-        const ws = new WebSocket("wss://localhost:26206");
-        ws.onopen = () => {
-            this.logger.log(`[OPEN] Connected to local websocket: ${ws.url}`);   
-            ws.send("READY"); 
-        };
-        ws.onmessage = (event) => {
-            this.logger.log(`[MESSAGE] Data received from local websocket: ${event.data}`);
+        const ws = new WebSocket("ws://192.168.0.198:26206");
+        
+        ws.addEventListener('open', () => {
+            this.logger.info(`[OPEN] Connected to websocket: ${ws.url}`);   
+            ws.send("[READY] Websocket is ready to receive messages"); 
+        });
+
+        ws.addEventListener('message', (event) => {
+            this.logger.info(`[MESSAGE] Data received from websocket: ${event.data}`);
             
-            switch (event.data.type) {
+            const response = JSON.parse(event.data);
+            switch (response.type) {
                 case "UPDATE": {
-                    this.sendRPC(event.data.activity, new AssetManager({ 
-                        applicationId : event.data.activity.application_id, 
-                        logger: this.logger, options: 
-                        event.data.assetOptions 
+                    this.sendRPC(response.activity, new AssetManager({ 
+                        applicationId: response.activity.application_id, 
+                        logger: this.logger, 
+                        options: response.assetOptions 
                     }));
                     break;
                 }
@@ -132,7 +135,19 @@ export default class RichPresence extends Plugin {
                     break;
                 }
             }
-        };
+        });
+
+        ws.addEventListener('close', (event) => {
+            if (event.wasClean) {
+                this.logger.info(`[CLOSE] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                this.logger.warn(`[CLOSE] Connection died`);
+            }
+        });
+        
+        ws.addEventListener("error", e => {
+            this.logger.error(`[ERROR] ${(e as ErrorEvent).message}`)}
+        );
     }
 
     public async start() {
