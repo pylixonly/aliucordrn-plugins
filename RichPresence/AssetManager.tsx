@@ -15,11 +15,11 @@ export default class AssetManager {
         this.options = options;
     }
 
-    async parseImageLinks(...links: string[]): Promise<string[]> {
-        return await Promise.all(links.map(x => this.parseImageLink(x)));
+    async parseAssetsNames(links: string[]): Promise<string[]> {
+        return await Promise.all(links.map(x => this.parseAssetName(x)));
     }
 
-    async parseImageLink(link: string) {
+    async parseAssetName(link: string): Promise<string> {
         let url: URL;
 
         try {
