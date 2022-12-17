@@ -88,11 +88,11 @@ export default class LastFMClient {
             name: 'Music',
             type: ActivityTypes.LISTENING,
             details: track.name,
-            state: track.artist,
+            state: `by ${track.artist}`,
             ...(track.album ? {
                 assets: {
                     large_image: track.albumArt,
-                    large_text: track.album,
+                    large_text: `on ${track.album}`,
                     ...(track.loved ? { 
                         small_image: 'loved',
                         small_text: 'Loved' 
