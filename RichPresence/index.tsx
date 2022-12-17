@@ -3,6 +3,7 @@ import { UserStore, FluxDispatcher/*, "Toasts"*/ } from "aliucord/metro"; // can
 import { before } from "aliucord/utils/patcher";
 import AssetManager from "./AssetManager";
 import LastFMClient, { ActivityTypes } from "./LastFMClient";
+import YoutubeClient from "./YoutubeClient";
 
 export interface Activity {
     name: string;
@@ -83,11 +84,26 @@ export default class RichPresence extends Plugin {
         Toasts.open({ content: "Initializing..."});
 
         const client = new LastFMClient("615322f0047e12aedbc610d9d71f7430", "slyde99", this.logger);
-        await client.stream((track) => {
+        await client.stream(async (track) => {
             if (!track) {
                 this.updateRPC(null);
                 return;
             }
+
+            this.logger.info(track.duration)
+
+            if (true && !track.albumArt) {
+                const ytClient = new YoutubeClient(this.logger);
+                const matching = await ytClient.findYoutubeEquivalent(track);
+
+                if (matching) {
+                    track.albumArt = matching.albumArt;
+                } else {
+                    this.logger.info(`${track.artist} - ${track.name} has no album art.`)
+                }
+            }
+
+            track.albumArt ??= "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
 
             this.sendRPC(client.mapToRPC(track) as any, new AssetManager({
                 applicationId: "463151177836658699",

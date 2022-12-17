@@ -65,21 +65,34 @@ export default class LastFMClient {
         }).toString();
 
         const response = await fetch(`http://ws.audioscrobbler.com/2.0/?${params}`).then(x => x.json());
+        
+        const trackDataParams = new URLSearchParams({
+            method: 'track.getInfo',
+            user: this.username,
+            api_key: this.apiKey,
+            format: 'json',
+            artist: response.recenttracks.track[0].artist.name,
+            track: response.recenttracks.track[0].name
+        }).toString();
+
+        const trackData = await fetch(`http://ws.audioscrobbler.com/2.0/?${trackDataParams}`).then(x => x.json());
+        
         const [track] = response.recenttracks.track;
-        this.logger.info('Mapped track:', this.mapTrack(track));
-        return this.mapTrack(track);
+        return this.mapTrack(track, trackData);
     }
 
-    mapTrack(track) {
+    mapTrack(track, trackData) {
         return {
             name: track.name,
             artist: track.artist.name,
             album: track.album['#text'],
             albumArt: this.polishAlbumArt(track.image[3]['#text']),
+            duration: Number(trackData.track.duration) / 1000 | 0,
             url: track.url,
             date: track.date?.['#text'] ?? 'now',
             nowPlaying: Boolean(track['@attr']?.nowplaying),
-            loved: track.loved === '1'
+            loved: track.loved === '1',
+            playCount: trackData.track.playcount
         }
     }
 
@@ -93,12 +106,18 @@ export default class LastFMClient {
                 assets: {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
-                    ...(track.loved ? { 
+                    ...(track.loved && false ? { 
                         small_image: 'loved',
                         small_text: 'Loved' 
                     } : {})
                 }
             } : {}),
+            ...(track.duration !== 0 ? { 
+                timestamps: {
+                    start: (Date.now() / 1000 | 0),
+                    end: (Date.now() / 1000 | 0) + track.duration
+                }
+            }: {}),
             buttons: [
                 { label: 'Listen', url: track.url }
             ],
@@ -112,8 +131,8 @@ export default class LastFMClient {
             "c6f59c1e5e7240a4c0d427abd71f3dbb",
         ];
     
-        if (defaultCoverHashes.filter(x => albumArt.includes(x)).length > 0) {
-            return "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
+        if (defaultCoverHashes.some(x => albumArt.includes(x))) {
+            return undefined;
         }
         
         return albumArt;
