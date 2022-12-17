@@ -31,6 +31,15 @@ export default class YoutubeClient {
         this.apiUrl = apiUrl;
     }
 
+    applyToTrack(yt: YoutubeTrack, track: Track): Track {
+        return {
+            ...track,
+            albumArt: yt.albumArt,
+            url: `https://music.youtube.com/watch?v=${yt.videoId}`,
+            duration: yt.duration
+        }
+    }
+
     async findYoutubeEquivalent(track: Track): Promise<YoutubeTrack | null> {
         const searchParam = `${track.artist} - ${track.name} on ${track.album}`;
         const search = await fetch(`${this.apiUrl}/search?part=snippet&q=${searchParam} "Provided to Youtube by"`)

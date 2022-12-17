@@ -23,7 +23,7 @@ export default class LastFMClient {
     }
 
     // callback is invoked when the user starts scrobbling a new song
-    // or when the user stops scrobbling (10 minutes timeout with undefined as an argument)
+    // or when the user stops scrobbling (10 minutes timeout with null as argument
     async stream(callback) {
         let currentTrack = await this.fetchCurrentScrobble();
         if (currentTrack.nowPlaying)
@@ -40,7 +40,7 @@ export default class LastFMClient {
                 // stop RPC when the user hasn't scrobbled in 10 minutes
                 if (!newTrack.nowPlaying && getUnixSecond() - lastCalled > 600) {
                     // clearInterval(this.updateInterval);
-                    callback(undefined);
+                    callback(null);
                     return;
                 }
 

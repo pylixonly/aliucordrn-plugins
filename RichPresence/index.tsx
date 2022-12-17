@@ -97,7 +97,7 @@ export default class RichPresence extends Plugin {
                 const matching = await ytClient.findYoutubeEquivalent(track);
 
                 if (matching) {
-                    track.albumArt = matching.albumArt;
+                    track = ytClient.applyToTrack(matching, track);
                 } else {
                     this.logger.info(`${track.artist} - ${track.name} has no album art.`)
                 }
