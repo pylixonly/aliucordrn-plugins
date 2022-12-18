@@ -5,7 +5,7 @@ import { Activity } from "../types/Activity";
 export default class RPCClient {
     lastRPC: any;
 
-    constructor(applicationId: string) {
+    constructor() {
         this.lastRPC = null;
     }
 

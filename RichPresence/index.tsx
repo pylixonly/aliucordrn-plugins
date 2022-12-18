@@ -9,12 +9,15 @@ import RPCClient from "./client/RPCClient";
 import { setLogger } from "./utils/Logger";
 
 export default class RichPresence extends Plugin {
-    rpcClient = new RPCClient("463151177836658699");
+    rpcClient = new RPCClient();
     lfmClient = new LastFMClient("615322f0047e12aedbc610d9d71f7430").setUsername("slyde99");
     ytmClient = new YoutubeClient();
 
-    public init() {
-        this.lfmClient.stream(async (track) => {
+    public async init() {
+
+
+
+        await this.lfmClient.stream(async (track) => {
             if (!track) {
                 this.rpcClient.updateRPC(null);
                 return;
