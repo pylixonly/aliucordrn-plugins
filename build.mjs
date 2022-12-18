@@ -1,4 +1,4 @@
-import { spawnSync } from "child_process";
+import { spawnSync, execSync } from "child_process";
 import { platform } from "process";
 import { existsSync } from "fs";
 import { join } from "path";
@@ -12,9 +12,13 @@ function check(bool, message) {
 }
 
 let watch;
+let deploy;
 let plugin = argv[2];
 if (plugin === "--watch") {
     watch = true;
+    plugin = argv[3];
+} else if (plugin === "--deploy") {
+    deploy = true;
     plugin = argv[3];
 }
 
@@ -38,4 +42,12 @@ const proc = spawnSync((platform === "win32") ? ".\\node_modules\\.bin\\rollup.c
 
 if (proc.error) {
     console.error(proc.error)
+}
+
+if (deploy) {
+    const exec = (cmd) => execSync(cmd, { stdio: "inherit" });
+    console.log("Deploying plugin to device...");
+    exec(`adb push ./dist/${plugin}.zip /sdcard/AliucordRN/plugins/`);
+    exec(`adb shell am force-stop com.discord`)
+    exec(`adb shell monkey -p com.discord -c android.intent.category.LAUNCHER 1`)
 }

@@ -56,11 +56,11 @@ export default class YoutubeClient {
         for (const result of results.items) {
             // check if the track name matches, whitespaces are removed
             if (track.name.replace(/\s/g, '') !== result.snippet.title.replace(/\s/g, '')) {
-                this.logger.info(`Track name mismatch: ${track.name} != ${result.snippet.name}`);
+                this.logger.info(`Track name mismatch: ${track.name} ≠ ${result.snippet.title}`);
                 continue;
             }
 
-            this.logger.info(`Track name matches: ${track.name} == ${result.snippet.name}`);
+            this.logger.info(`Track name matches: ${track.name} = ${result.snippet.title}`);
 
             return {
                 name: result.snippet.title,

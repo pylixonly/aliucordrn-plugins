@@ -5,7 +5,8 @@
   "author": "Aliucord",
   "scripts": {
     "build": "node build.mjs",
-    "watch": "node build.mjs --watch"
+    "watch": "node build.mjs --watch",
+    "deploy": "node build.mjs --deploy"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.2",
