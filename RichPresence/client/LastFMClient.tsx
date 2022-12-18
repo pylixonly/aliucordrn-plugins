@@ -1,4 +1,5 @@
 import { Logger } from "aliucord/utils/Logger";
+import { RPLogger } from "../utils/Logger";
 import { Activity, ActivityTypes } from "../types/Activity";
 
 export default class LastFMClient {
@@ -8,15 +9,13 @@ export default class LastFMClient {
 
     updateInterval?: Promise<void>;
 
-    constructor(apiKey, username, logger) {
+    constructor(apiKey, username) {
         this.apiKey = apiKey;
         this.username = username;
-        this.logger = logger;
+        this.logger = RPLogger;
     }
 
-    // callback is invoked when the user starts scrobbling a new song
-    // or when the user stops scrobbling (10 minutes timeout with null as argument
-    async stream(callback) {
+    async stream(callback): Promise<Promise<void>> {
         let currentTrack = await this.fetchCurrentScrobble();
         if (currentTrack.nowPlaying)
             callback(currentTrack);
@@ -29,8 +28,8 @@ export default class LastFMClient {
             return setInterval(async() => {
                 const newTrack = await this.fetchCurrentScrobble();
 
-                // stop RPC when the user hasn't scrobbled in 10 minutes
-                if (!newTrack.nowPlaying && getUnixSecond() - lastCalled > 600) {
+                // stop RPC when the user hasn't scrobbled in 30 seconds
+                if (!newTrack.nowPlaying && getUnixSecond() - lastCalled > 30) {
                     // clearInterval(this.updateInterval);
                     callback(null);
                     return;

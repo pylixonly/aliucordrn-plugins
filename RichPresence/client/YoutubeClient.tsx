@@ -1,12 +1,13 @@
 import { Logger } from "aliucord/utils/Logger";
+import { RPLogger } from "../utils/Logger";
 import { Track, YoutubeTrack } from "../types/Track";
 
 export default class YoutubeClient {
     logger: Logger;
     apiUrl: string;
     
-    constructor(logger, apiUrl = 'https://yt.lemnoslife.com/noKey', apiKey?) {
-        this.logger = logger;
+    constructor(apiUrl = 'https://yt.lemnoslife.com/noKey', apiKey?) {
+        this.logger = RPLogger;
         this.apiUrl = apiUrl;
     }
 
@@ -21,6 +22,7 @@ export default class YoutubeClient {
 
     async findYoutubeEquivalent(track: Track): Promise<YoutubeTrack | null> {
         const searchParam = `${track.artist} - "${track.name}" on ${track.album}`;
+        
         this.logger.info(`Begin searching for ${searchParam} on Youtube...`);
         const search = await fetch(`${this.apiUrl}/search?part=snippet&q=${searchParam} "Provided to Youtube by"`)
         const results = await search.json();
