@@ -1,26 +1,5 @@
 import { Logger } from "aliucord/utils/Logger";
-
-type Track = {
-    name: string;
-    artist: string;
-    album: string;
-    albumArt: string;
-    url: string;
-    date: string | number | Date;
-    duration?: number;
-    nowPlaying: boolean;
-    loved: boolean;
-};
-
-export type YoutubeTrack = {
-    name: string;
-    description: string;
-    artist: string;
-    albumArt: string;
-    videoId: string;
-    url: string;
-    duration: number;
-}
+import { Track, YoutubeTrack } from "../types/Track";
 
 export default class YoutubeClient {
     logger: Logger;

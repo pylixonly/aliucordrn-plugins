@@ -1,13 +1,5 @@
 import { Logger } from "aliucord/utils/Logger";
-import { Activity } from ".";
-
-export enum ActivityTypes {
-    GAME = 0,
-    STREAMING = 1,
-    LISTENING = 2,
-    WATCHING = 3,
-    COMPETING = 5
-}
+import { Activity, ActivityTypes } from "../types/Activity";
 
 export default class LastFMClient {
     apiKey: string;
