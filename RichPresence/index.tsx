@@ -9,22 +9,22 @@ import RPCClient from "./client/RPCClient";
 import { setLogger } from "./utils/Logger";
 
 export default class RichPresence extends Plugin {
-    public init() {
-        const rpcClient = new RPCClient("463151177836658699");
-        const lfmClient = new LastFMClient("615322f0047e12aedbc610d9d71f7430", "slyde99");
-        const ytmClient = new YoutubeClient();
+    rpcClient = new RPCClient("463151177836658699");
+    lfmClient = new LastFMClient("615322f0047e12aedbc610d9d71f7430").setUsername("slyde99");
+    ytmClient = new YoutubeClient();
 
-        lfmClient.stream(async (track) => {
+    public init() {
+        this.lfmClient.stream(async (track) => {
             if (!track) {
-                rpcClient.updateRPC(null);
+                this.rpcClient.updateRPC(null);
                 return;
             }
 
             if (true && !track.albumArt) {
-                const matching = await ytmClient.findYoutubeEquivalent(track);
+                const matching = await this.ytmClient.findYoutubeEquivalent(track);
 
                 if (matching) {
-                    track = ytmClient.applyToTrack(matching, track);
+                    track = this.ytmClient.applyToTrack(matching, track);
                 } else {
                     this.logger.info(`${track.artist} - ${track.name} has no album art.`)
                 }
@@ -32,7 +32,7 @@ export default class RichPresence extends Plugin {
 
             track.albumArt ??= "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
 
-            rpcClient.sendRPC(lfmClient.mapToRPC(track));
+            this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
         });
     }
 

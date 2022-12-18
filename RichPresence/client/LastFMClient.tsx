@@ -4,15 +4,19 @@ import { Activity, ActivityTypes } from "../types/Activity";
 
 export default class LastFMClient {
     apiKey: string;
-    username: string;
+    username?: string;
     logger: Logger;
 
     updateInterval?: Promise<void>;
 
-    constructor(apiKey, username) {
+    constructor(apiKey) {
         this.apiKey = apiKey;
-        this.username = username;
         this.logger = RPLogger;
+    }
+
+    setUsername(username: string) {
+        this.username = username;
+        return this;
     }
 
     async stream(callback): Promise<Promise<void>> {
@@ -46,6 +50,11 @@ export default class LastFMClient {
 
     
     async fetchCurrentScrobble() {
+        if (!this.username) {
+            this.logger.error(`[instance: ${this.apiKey}] No username set`);
+            throw new Error('No username set');
+        }
+
         const params = new URLSearchParams({
             'method': 'user.getrecenttracks',
             'user': this.username,
