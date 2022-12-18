@@ -42,9 +42,7 @@ const proc = spawnSync((platform === "win32") ? ".\\node_modules\\.bin\\rollup.c
 
 if (proc.error) {
     console.error(proc.error)
-}
-
-if (deploy) {
+} else if (deploy) {
     const exec = (cmd) => execSync(cmd, { stdio: "inherit" });
     console.log("Deploying plugin to device...");
     exec(`adb push ./dist/${plugin}.zip /sdcard/AliucordRN/plugins/`);
