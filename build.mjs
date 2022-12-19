@@ -47,6 +47,5 @@ if (proc.error) {
     console.log("Deploying plugin to device...");
     exec(`adb push ./dist/${plugin}.zip /sdcard/AliucordRN/plugins/`);
     exec(`adb shell am force-stop com.discord`)
-    exec(`adb shell monkey -p com.discord -c android.intent.category.LAUNCHER 1`)
-    exec(`adb shell content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0`)
+    exec(`adb shell am start -n com.discord/.main.MainActivity`)
 }

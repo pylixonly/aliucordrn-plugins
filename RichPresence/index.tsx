@@ -4,10 +4,13 @@ import { before } from "aliucord/utils/patcher";
 import LastFMClient from "./client/LastFMClient";
 import YoutubeClient from "./client/YoutubeClient";
 import RPCClient from "./client/RPCClient";
-import { setLogger } from "./utils/Logger";
 import { patchUI } from "./pages/patches";
+import { useSettings } from "aliucord/api";
+import { Logger } from "aliucord/utils/Logger";
 
 export default class RichPresence extends Plugin {
+    static classInstance: RichPresence;
+    
     rpcClient = new RPCClient();
     lfmClient = new LastFMClient("615322f0047e12aedbc610d9d71f7430").setUsername("slyde99");
     ytmClient = new YoutubeClient();
@@ -40,9 +43,9 @@ export default class RichPresence extends Plugin {
     }
 
     public start() {
+        RichPresence.classInstance = this;
         setLogger(this.logger);
         patchUI(this);
-
 
         let initialized = false;
 
@@ -63,4 +66,8 @@ export default class RichPresence extends Plugin {
 
     public stop() {
     }
+}
+
+function setLogger(logger: Logger) {
+    throw new Error("Function not implemented.");
 }
