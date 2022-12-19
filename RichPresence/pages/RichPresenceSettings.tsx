@@ -26,7 +26,7 @@ export default function RichPresenceSettings() {
     {/*
         // @ts-ignore */}
         <ScrollView>
-            <FormSection title="Settings" android_noDivider={true}>
+            <FormSection title="RPCSettings" android_noDivider={true}>
                 <FormRow
                     label="Enable Rich Presence"
                     trailing={<FormSwitch 
