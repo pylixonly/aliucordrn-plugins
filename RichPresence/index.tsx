@@ -1,12 +1,11 @@
 import { Plugin } from "aliucord/entities";
-import { UserStore, FluxDispatcher } from "aliucord/metro";
+import { UserStore, FluxDispatcher, getByProps } from "aliucord/metro";
 import { before } from "aliucord/utils/patcher";
 import LastFMClient from "./client/LastFMClient";
 import YoutubeClient from "./client/YoutubeClient";
-import { Activity, ActivityTypes } from "./types/Activity";
-import { Logger } from "aliucord/utils/Logger";
 import RPCClient from "./client/RPCClient";
 import { setLogger } from "./utils/Logger";
+import { patchUI } from "./pages/patches";
 
 export default class RichPresence extends Plugin {
     rpcClient = new RPCClient();
@@ -14,9 +13,6 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
 
     public async init() {
-
-
-
         await this.lfmClient.stream(async (track) => {
             if (!track) {
                 this.rpcClient.updateRPC(null);
@@ -45,6 +41,9 @@ export default class RichPresence extends Plugin {
 
     public start() {
         setLogger(this.logger);
+        patchUI(this);
+
+
         let initialized = false;
 
         if (UserStore.getCurrentUser()) {
