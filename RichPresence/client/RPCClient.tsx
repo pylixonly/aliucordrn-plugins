@@ -35,9 +35,9 @@ export default class RPCClient {
             timestamps: activity.timestamps,
             assets: activity.assets,
             metadata: activity.buttons ? {
-                button_urls: activity.buttons.map(button => button.url)
+                button_urls: activity.buttons.map(x => x.url)
             } : undefined,
-            buttons: activity.buttons?.map(button => button.label),
+            buttons: activity.buttons?.filter(x => x.label !== "").map(x => x.label),
             application_id: activity.application_id
         }; 
 

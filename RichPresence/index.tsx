@@ -7,6 +7,7 @@ import RPCClient from "./client/RPCClient";
 import { setLogger } from "./utils/Logger";
 import { patchUI } from "./pages/patches";
 import { useSettings } from "aliucord/api";
+import { ActivityTypes } from "./types/Activity";
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
@@ -16,6 +17,31 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
 
     public async init() {
+        if (this.settings.get("rpc_enabled", false)) {
+            this.rpcClient.sendRPC({
+                name: this.settings.get("rpc_AppName", "Discord"),
+                type: ActivityTypes.GAME, // PLAYING
+                state: this.settings.get("rpc_State", ""),
+                details: this.settings.get("rpc_Details", ""),
+                timestamps: {
+                    start: Date.now() / 1000 | 0 // 'OR 0' rounds to integer
+                },
+                assets: {
+                    large_image: this.settings.get("rpc_LargeImage", undefined),
+                    large_text: this.settings.get("rpc_LargeImageText", undefined),
+                    small_image: this.settings.get("rpc_SmallImage", undefined),
+                    small_text: this.settings.get("rpc_SmallImageText", undefined)
+                },
+                buttons: [
+                    { label: this.settings.get("rpc_Button1Text", ""), url: this.settings.get("rpc_Button1URL", "")},
+                    { label: this.settings.get("rpc_Button2Text", ""), url: this.settings.get("rpc_Button2URL", "")}
+                ],
+                application_id: this.settings.get("rpc_AppID", "463151177836658699")
+            });
+
+            return;
+        }
+
         await this.lfmClient.stream(async (track) => {
             if (!track) {
                 this.rpcClient.updateRPC(null);
