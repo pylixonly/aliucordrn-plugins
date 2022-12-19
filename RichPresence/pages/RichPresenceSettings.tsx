@@ -35,11 +35,13 @@ export default function RichPresenceSettings() {
                         value = {settings.get("rpc_enabled", false)}
                         onValueChange={v => {
                             settings.set("rpc_enabled", v);
-                            RichPresence.classInstance.init();
+                            RichPresence.classInstance.rpcClient.updateRPC(null).then(() => {
+                                RichPresence.classInstance.init();
+                            });
                         }}
                     />}
                 />
-                <FormRow label="Rich presence will be applied when this toggle is turned on or after you restarted your Discord client." />
+                <FormRow label="Rich presence will be updated when this toggle is turned on or after your Discord client is restarted." />
                 <FormDivider />
                 <FormInput
                     title="App Name"

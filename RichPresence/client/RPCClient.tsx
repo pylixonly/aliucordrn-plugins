@@ -1,6 +1,7 @@
 import { FluxDispatcher, getByProps } from "aliucord/metro";
 import { RPLogger } from "../utils/Logger";
 import { Activity } from "../types/Activity";
+import RichPresence from "..";
 
 export default class RPCClient {
     lastRPC: any;
@@ -11,7 +12,7 @@ export default class RPCClient {
 
     public async sendRPC(activity: Activity | null) {
         if (!activity) {
-            this.updateRPC(null);
+            await this.updateRPC(null);
             return;
         }
 
@@ -19,7 +20,7 @@ export default class RPCClient {
             const [large_image, small_image] = await this.lookupAssets(
                 activity.application_id, 
                 [activity.assets.large_image!, activity.assets.small_image!]
-                    .filter(asset => asset !== undefined)
+                    .filter(asset => asset !== undefined && asset !== "")
             );
 
             large_image && (activity.assets.large_image = large_image);
@@ -37,7 +38,7 @@ export default class RPCClient {
             metadata: activity.buttons ? {
                 button_urls: activity.buttons.map(x => x.url)
             } : undefined,
-            buttons: activity.buttons?.filter(x => x.label !== "").map(x => x.label),
+            buttons: activity.buttons?.filter(x => x?.label !== "").map(x => x.label),
             application_id: activity.application_id
         }; 
 
@@ -45,7 +46,7 @@ export default class RPCClient {
         Object.keys(params).forEach((k) => params[k] === undefined && delete params[k]);
 
         // send update to Discord
-        this.updateRPC(params);
+        await this.updateRPC(params);
     }
 
     public async updateRPC(activity?: any) {

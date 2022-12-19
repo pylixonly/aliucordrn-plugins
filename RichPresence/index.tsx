@@ -18,7 +18,8 @@ export default class RichPresence extends Plugin {
 
     public async init() {
         if (this.settings.get("rpc_enabled", false)) {
-            this.rpcClient.sendRPC({
+            this.logger.info("Rich Presence is enabled.");
+            await this.rpcClient.sendRPC({
                 name: this.settings.get("rpc_AppName", "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
                 state: this.settings.get("rpc_State", ""),
@@ -40,7 +41,9 @@ export default class RichPresence extends Plugin {
             });
 
             return;
-        }
+        } 
+
+        this.logger.info("Streaming last.fm...");
 
         await this.lfmClient.stream(async (track) => {
             if (!track) {
