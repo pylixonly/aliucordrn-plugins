@@ -48,12 +48,12 @@ export default class RichPresence extends Plugin {
                 timestamps: {
                     start: Date.now() / 1000 | 0 // 'OR 0' rounds to integer
                 },
-                assets: {
+                ...(this.settings.get("rpc_LargeImage", undefined) ? { assets: {
                     large_image: this.settings.get("rpc_LargeImage", undefined),
                     large_text: this.settings.get("rpc_LargeImageText", undefined),
                     small_image: this.settings.get("rpc_SmallImage", undefined),
                     small_text: this.settings.get("rpc_SmallImageText", undefined)
-                },
+                }} : {}),
                 buttons: [
                     { label: this.settings.get("rpc_Button1Text", ""), url: this.settings.get("rpc_Button1URL", "")},
                     { label: this.settings.get("rpc_Button2Text", ""), url: this.settings.get("rpc_Button2URL", "")}

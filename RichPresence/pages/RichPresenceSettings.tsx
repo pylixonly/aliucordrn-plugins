@@ -21,17 +21,16 @@ export default function RichPresenceSettings({ navigation }) {
                 <FormRow
                     label="Enable Rich Presence"
                     subLabel="Rich presence will be updated when this toggle is turned on or after your Discord client is restarted."
-                    description="Enable Rich Presence"
                     trailing={<FormSwitch 
                         value = {settings.get("rpc_enabled", false)}
                         onValueChange={v => {
                             if (v && settings.get("rpc_mode", "none") == "none") {
-                                Toasts.open({ content: "Please select a mode before enabling Rich Presence.", source: getAssetId("Small")})
+                                Toasts.open({ content: "Please select a mode before enabling rich presence.", source: getAssetId("Small")})
                                 return;
                             }
 
                             if (v && settings.get("rpc_mode", "lastfm") === "lastfm" && settings.get("lastfm_username", "") === "") {
-                                Toasts.open({ content: "Please insert a Last.fm username or switch to custom set.", source: getAssetId("Small")})
+                                Toasts.open({ content: "Please insert a Last.fm username or switch mode.", source: getAssetId("Small")})
                                 return;
                             }
 
@@ -41,6 +40,17 @@ export default function RichPresenceSettings({ navigation }) {
                         }}
                     />}
                 />
+                { settings.get("rpc_enabled", false) &&
+                    <FormRow
+                        label="Force update Rich Presence"
+                        subLabel="Use this to apply changes to your rich presence settings."
+                        trailing={FormRow.Arrow}
+                        onPress={() => {
+                            RichPresence.classInstance.init();
+                            Toasts.open({ content: "Rich presence updated."})
+                        }}
+                    />
+                }
             </FormSection>
             <FormSection title="Mode">
                 <FormRow
@@ -71,7 +81,7 @@ export default function RichPresenceSettings({ navigation }) {
                 />
                 <FormRow
                     label="Configure Custom Rich Presence"
-                    subLabel="Show how cool you are to your friends by customizing your Rich Presence."
+                    subLabel="Show how cool you are to your friends by manually customizing your rich presence."
                     trailing={FormRow.Arrow}
                     onPress={() => navigation.push("RichPresenceSetupPage")}
                 />

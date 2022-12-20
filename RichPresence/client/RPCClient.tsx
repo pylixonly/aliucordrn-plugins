@@ -37,14 +37,14 @@ export default class RPCClient {
             timestamps: activity.timestamps,
             assets: activity.assets,
             metadata: activity.buttons ? {
-                button_urls: activity.buttons.map(x => x.url)
+                button_urls: activity.buttons.map(x => x.url).filter(x => x !== "")
             } : undefined,
             buttons: activity.buttons?.map(x => x.label).filter(x => x !== ""),
             application_id: activity.application_id
         }; 
 
         // remove undefined values
-        Object.keys(params).forEach((k) => params[k] === undefined && delete params[k]);
+        Object.keys(params).forEach((k) => params[k] === undefined || params[k].length === 0 && delete params[k]);
 
         // send update to Discord
         await this.updateRPC(params);
