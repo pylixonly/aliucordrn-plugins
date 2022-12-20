@@ -40,7 +40,7 @@ export default class RichPresence extends Plugin {
         if (this.settings.get("rpc_mode", "none") === "custom") {
             this.logger.info("Starting user-set RPC...");
 
-            const startTimestamp = this.settings.get("rpc_StartTimestamp", "since_start");
+            const startTimestamp = ifEmpty(this.settings.get("rpc_StartTimestamp", ""), "since_start");
             const endTimestamp = this.settings.get("rpc_EndTimestamp", "");
 
             await this.rpcClient.sendRPC({
@@ -110,6 +110,9 @@ export default class RichPresence extends Plugin {
                     activity.type = ActivityTypes.LISTENING;
                     event.activity = activity;
                 }
+            } 
+            if (event.type === "LOCAL_ACTIVITY_UPDATE") {
+                this.logger.info(event)
             }
         })
     }

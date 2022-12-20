@@ -17,6 +17,12 @@ export default class RPCClient {
         const { SET_ACTIVITY } = getModule(x => !!x.SET_ACTIVITY);
         const { handler } = SET_ACTIVITY;
 
+        if (activity)
+            // Remove empty properties/arrays
+            Object.keys(activity).forEach((k) => activity[k] === undefined 
+                                                || activity[k].length === 0 
+                                                && delete activity[k]);
+
         await handler({
             isSocketConnected: () => true,
             socket: {
