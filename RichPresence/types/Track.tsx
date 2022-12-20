@@ -5,7 +5,6 @@ export type Track = {
     albumArt: string;
     url: string;
     date: string | number | Date;
-    duration?: number;
     nowPlaying: boolean;
     loved: boolean;
     ytUrl: string;
@@ -18,5 +17,4 @@ export type YoutubeTrack = {
     albumArt: string;
     videoId: string;
     url: string;
-    duration: number;
 }

@@ -83,24 +83,22 @@ export default class LastFMClient {
             track: response.recenttracks.track[0].name
         }).toString();
 
-        const trackData = await fetch(`http://ws.audioscrobbler.com/2.0/?${trackDataParams}`).then(x => x.json());
+        // const trackData = await fetch(`http://ws.audioscrobbler.com/2.0/?${trackDataParams}`).then(x => x.json());
         
         const [track] = response.recenttracks.track;
-        return this.mapTrack(track, trackData);
+        return this.mapTrack(track); //, trackData);
     }
 
-    mapTrack(track, trackData) {
+    mapTrack(track) {   // mapTrack(track, trackData) {
         return {
             name: track.name,
             artist: track.artist.name,
             album: track.album['#text'],
             albumArt: this.polishAlbumArt(track.image[3]['#text']),
-            duration: Number(trackData.track.duration) / 1000 | 0,
             url: track.url,
             date: track.date?.['#text'] ?? 'now',
             nowPlaying: Boolean(track['@attr']?.nowplaying),
             loved: track.loved === '1',
-            playCount: trackData.track.playcount
         }
     }
 
@@ -120,12 +118,6 @@ export default class LastFMClient {
                     } : {})
                 }
             } : {}),
-            ...(track.duration !== 0 ? { 
-                timestamps: {
-                    start: (Date.now() / 1000 | 0),
-                    end: (Date.now() / 1000 | 0) + track.duration!
-                }
-            }: {}),
             ...(settings.get("lastfm_add_ytm_button", false) ?  { buttons: [
                 { label: 'Listen on Youtube Music', url: track.ytUrl }
             ]} : {}),

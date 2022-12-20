@@ -15,8 +15,7 @@ export default class YoutubeClient {
         return {
             ...track,
             albumArt: yt.albumArt,
-            ytUrl: `https://music.youtube.com/watch?v=${yt.videoId}`,
-            duration: yt.duration
+            ytUrl: `https://music.youtube.com/watch?v=${yt.videoId}`
         }
     }
 
@@ -50,8 +49,6 @@ export default class YoutubeClient {
                 albumArt: `https://i.ytimg.com/vi/${result.id.videoId}/maxresdefault.jpg`,
                 videoId: result.id.videoId,
                 url: `https://www.youtube.com/watch?v=${result.id.videoId}`,
-                // TODO: make fetch duration an option 
-                duration: true ? await this.getDuration(result.id.videoId) : 0
             } as YoutubeTrack;
         }
 
