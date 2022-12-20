@@ -10,22 +10,26 @@ export default class RPCClient {
         this.lastRPC = null;
     }
 
-    public async sendRPC(activity: Activity | null) {
+    public async sendRPC(activity?: Activity | null) {
         if (!activity) {
             await this.updateRPC(null);
             return;
         }
 
+        RPLogger.log("Sending RPC:", activity);
+        RPLogger.log("Acitivity assets loading...");
         if (activity.assets !== undefined) {
             const [large_image, small_image] = await this.lookupAssets(
                 activity.application_id, 
                 [activity.assets.large_image!, activity.assets.small_image!]
-                    .filter(asset => asset !== undefined && asset !== "")
             );
+            RPLogger.log("Acitivity assets loaded.", large_image, small_image);
 
-            large_image && (activity.assets.large_image = large_image);
-            small_image && (activity.assets.small_image = small_image);
+            activity.assets.large_image = large_image ? large_image : undefined;
+            activity.assets.small_image = small_image ? small_image : undefined;
         }
+
+        RPLogger.info("Sending RPC:", activity);
 
         let params: any = {
             name: activity.name,
@@ -38,7 +42,7 @@ export default class RPCClient {
             metadata: activity.buttons ? {
                 button_urls: activity.buttons.map(x => x.url)
             } : undefined,
-            buttons: activity.buttons?.filter(x => x?.label !== "").map(x => x.label),
+            buttons: activity.buttons?.map(x => x.label).filter(x => x !== ""),
             application_id: activity.application_id
         }; 
 
@@ -49,7 +53,7 @@ export default class RPCClient {
         await this.updateRPC(params);
     }
 
-    public async updateRPC(activity?: any) {
+    private async updateRPC(activity?: any) {
         this.lastRPC = activity;
         await FluxDispatcher.dispatch({
             type: "LOCAL_ACTIVITY_UPDATE",
@@ -59,10 +63,17 @@ export default class RPCClient {
         RPLogger.info(activity ? "Updated presence with params:" : "Stopped presence:", activity);
     }
 
-    async lookupAssets(applicationId: string, names: string[]): Promise<string[]> {
-        const assetLinks: string[] = [];
+    async lookupAssets(applicationId: string, names: string[]): Promise<(string | undefined)[]> {
+        const assetLinks: (string | undefined)[] = [];
         for (const name of names) {
             let url: URL;
+            RPLogger.log("Looking up asset:", name);
+
+            if (name === "" || name === undefined) {
+                assetLinks.push(undefined);
+                continue;
+            }
+            RPLogger.info(`${name} is not empty.`)
 
             try {
                 url = new URL(name);
@@ -73,12 +84,14 @@ export default class RPCClient {
 
             if (url.hostname.includes("discordapp")) {
                 assetLinks.push(`mp:${url.pathname.slice(1)}`);
+            } else {
+                const uploadedAssets = await this.uploadFromExternalLink(applicationId, [url.href]);
+                assetLinks.push(uploadedAssets[0]);
             }
         }
 
         if (assetLinks.length === names.length) return assetLinks;
-
-        return await this.uploadFromExternalLink(applicationId, names);
+        return [];
     }
 
     async uploadFromExternalLink(applicationId: string, assetNames: string[]): Promise<string[]> {

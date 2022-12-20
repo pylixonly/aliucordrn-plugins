@@ -7,7 +7,7 @@ export default class LastFMClient {
     username?: string;
     logger: Logger;
 
-    updateInterval?: Promise<void>;
+    updateInterval?: NodeJS.Timer;
 
     constructor(apiKey) {
         this.apiKey = apiKey;
@@ -19,7 +19,7 @@ export default class LastFMClient {
         return this;
     }
 
-    async stream(callback): Promise<Promise<void>> {
+    async stream(callback): Promise<NodeJS.Timer> {
         let currentTrack = await this.fetchCurrentScrobble();
         if (currentTrack.nowPlaying)
             callback(currentTrack);
@@ -28,24 +28,26 @@ export default class LastFMClient {
 
         let lastCalled = getUnixSecond();
 
-        return this.updateInterval = new Promise(async () => {
-            return setInterval(async() => {
-                const newTrack = await this.fetchCurrentScrobble();
+        return setInterval(async () => {
+            const newTrack = await this.fetchCurrentScrobble();
 
-                // stop RPC when the user hasn't scrobbled in 30 seconds
-                if (!newTrack.nowPlaying && getUnixSecond() - lastCalled > 30) {
-                    // clearInterval(this.updateInterval);
-                    callback(null);
-                    return;
-                }
+            // stop RPC when the user hasn't scrobbled in 30 seconds
+            if (!newTrack.nowPlaying && getUnixSecond() - lastCalled > 30) {
+                // clearInterval(this.updateInterval);
+                callback(null);
+                return;
+            }
 
-                if (newTrack.url !== currentTrack.url && newTrack.nowPlaying) {
-                    currentTrack = newTrack;
-                    callback(currentTrack);
-                    lastCalled = getUnixSecond();
-                }
-            }, 10000);
-        });
+            if (newTrack.url !== currentTrack.url && newTrack.nowPlaying) {
+                currentTrack = newTrack;
+                callback(currentTrack);
+                lastCalled = getUnixSecond();
+            }
+        }, 10000);
+    }
+
+    clear() {
+        this.updateInterval && clearInterval(this.updateInterval);
     }
 
     

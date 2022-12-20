@@ -23,7 +23,7 @@ export default class RPWebSocket extends WebSocket {
                 break;
             }
             case "STOP": {
-                this.rpcClient.updateRPC(null);
+                this.rpcClient.sendRPC();
                 break;
             }
         }

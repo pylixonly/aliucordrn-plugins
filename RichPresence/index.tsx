@@ -8,6 +8,7 @@ import { setLogger } from "./utils/Logger";
 import { patchUI } from "./pages/patches";
 import { useSettings } from "aliucord/api";
 import { ActivityTypes } from "./types/Activity";
+import { clearInterval } from "timers";
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
@@ -17,6 +18,9 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
 
     public async init() {
+        this.lfmClient.clear();
+        this.rpcClient.sendRPC();
+        
         if (this.settings.get("rpc_enabled", false)) {
             this.logger.info("Rich Presence is enabled.");
             await this.rpcClient.sendRPC({
@@ -47,7 +51,7 @@ export default class RichPresence extends Plugin {
 
         await this.lfmClient.stream(async (track) => {
             if (!track) {
-                this.rpcClient.updateRPC(null);
+                this.rpcClient.sendRPC();
                 return;
             }
 

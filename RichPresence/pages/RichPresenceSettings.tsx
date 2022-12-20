@@ -35,9 +35,7 @@ export default function RichPresenceSettings() {
                         value = {settings.get("rpc_enabled", false)}
                         onValueChange={v => {
                             settings.set("rpc_enabled", v);
-                            RichPresence.classInstance.rpcClient.updateRPC(null).then(() => {
-                                RichPresence.classInstance.init();
-                            });
+                            RichPresence.classInstance.init();
                         }}
                     />}
                 />
