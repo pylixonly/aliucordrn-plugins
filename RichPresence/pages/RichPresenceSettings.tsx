@@ -1,26 +1,15 @@
 import { React, ReactNative, Styles, Forms } from "aliucord/metro"
 import { getAssetId } from "aliucord/utils"
 import RichPresence from "..";
+import { getSettings } from "./patches";
 
 const { View, Text, ScrollView } = ReactNative;
 
 const { FormRow, FormSection, FormSwitch, FormInput, FormDivider, FormText } = Forms;
-
-function getSettings() {
-    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
-    return {
-        get(key, defaultValue) {
-            return RichPresence.classInstance.settings.get(key, defaultValue);
-        },
-        set(key, value) {
-            RichPresence.classInstance.settings.set(key, value);
-            forceUpdate(); 
-        }
-    };
-}
+const Toasts = (window as any).aliucord.metro.Toasts;
 
 // TODO: option for lfm
-export default function RichPresenceSettings() {
+export default function RichPresenceSettings({ navigation }) {
     const settings = getSettings();
 
     return (<>
@@ -35,6 +24,10 @@ export default function RichPresenceSettings() {
                     trailing={<FormSwitch 
                         value = {settings.get("rpc_enabled", false)}
                         onValueChange={v => {
+                            if (v && settings.get("rpc_AppID", "") === "") {
+                                Toasts.open({ content: "Please insert an App ID before enabling Rich Presence.", source: getAssetId("Small")})
+                                return;
+                            }
                             settings.set("rpc_enabled", v);
                             RichPresence.classInstance.init();
                         }}
@@ -42,103 +35,19 @@ export default function RichPresenceSettings() {
                 />
                 <FormDivider />
                 <FormInput
-                    title="App Name"
-                    value={settings.get("rpc_AppName", "")}
-                    placeholder="Insert App Name"
-                    onChange={v => {
-                        settings.set("rpc_AppName", v);
-                    }}
-                />
-                <FormInput
-                    title="App ID"
+                    title="Application ID [REQUIRED]"
                     value={settings.get("rpc_AppID", "")}
-                    placeholder="Insert App ID"
+                    placeholder="Insert Application ID"
                     onChange={v => {
                         settings.set("rpc_AppID", v);
                     }}
                 />
-                <FormInput
-                    title="State"
-                    value={settings.get("rpc_State", "")}
-                    placeholder="Insert State"
-                    onChange={v => {
-                        settings.set("rpc_State", v);
-                    }}
+                <FormRow
+                    label="Configure Custom Rich Presence"
+                    subLabel="Show how cool you are to your friends by customizing your Rich Presence."
+                    trailing={FormRow.Arrow}
+                    onPress={() => navigation.push("CustomOptionPage")}
                 />
-                <FormInput
-                    title="Details"
-                    value={settings.get("rpc_Details", "")}
-                    placeholder="Insert Details"
-                    onChange={v => {
-                        settings.set("rpc_Details", v);
-                    }}
-                />
-                <FormInput
-                    title="Large Image"
-                    value={settings.get("rpc_LargeImage", "")}
-                    placeholder="Insert Large Image"
-                    onChange={v => {
-                        settings.set("rpc_LargeImage", v);
-                    }}
-                />
-                <FormInput
-                    title="Large Image Text"
-                    value={settings.get("rpc_LargeImageText", "")}
-                    placeholder="Insert Large Image Text"
-                    onChange={v => {
-                        settings.set("rpc_LargeImageText", v);
-                    }}
-                />
-                <FormInput
-                    title="Small Image"
-                    value={settings.get("rpc_SmallImage", "")}
-                    placeholder="Insert Small Image"
-                    onChange={v => {
-                        settings.set("rpc_SmallImage", v);
-                    }}
-                />
-                <FormInput
-                    title="Small Image Text"
-                    value={settings.get("rpc_SmallImageText", "")}
-                    placeholder="Insert Small Image Text"
-                    onChange={v => {
-                        settings.set("rpc_SmallImageText", v);
-                    }}
-                />
-                <FormInput
-                    title="First Button Text"
-                    value={settings.get("rpc_Button1Text", "")}
-                    placeholder="Insert First Button Text"
-                    onChange={v => {
-                        settings.set("rpc_Button1Text", v);
-                    }}
-                />
-                { settings.get("rpc_Button1Text", "") != "" && 
-                <FormInput
-                    title="First Button URL"
-                    value={settings.get("rpc_Button1URL", "")}
-                    placeholder="Insert First Button URL"
-                    onChange={v => {
-                        settings.set("rpc_Button1URL", v);
-                    }}
-                />}
-                <FormInput
-                    title="Second Button Text"
-                    value={settings.get("rpc_Button2Text", "")}
-                    placeholder="Insert Second Button Text"
-                    onChange={v => {
-                        settings.set("rpc_Button2Text", v);
-                    }}
-                />
-                { settings.get("rpc_Button2Text", "") != "" &&
-                <FormInput                    
-                    title="Second Button URL"
-                    value={settings.get("rpc_Button2URL", "")}
-                    placeholder="Insert Second Button URL"
-                    onChange={v => {
-                        settings.set("rpc_Button2URL", v);
-                    }}
-                />}
             </FormSection>
         </ScrollView>
     </>)

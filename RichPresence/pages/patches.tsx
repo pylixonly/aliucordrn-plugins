@@ -1,7 +1,22 @@
 import { React, Forms, getByProps } from "aliucord/metro";
 import { findInReactTree, getAssetId } from "aliucord/utils";
+import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
+import CustomOptionPage from "./CustomOptionPage";
 import RichPresenceSettings from "./RichPresenceSettings";
+
+export const getSettings = () => {
+    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+    return {
+        get(key, defaultValue) {
+            return RichPresence.classInstance.settings.get(key, defaultValue);
+        },
+        set(key, value) {
+            RichPresence.classInstance.settings.set(key, value);
+            forceUpdate(); 
+        }
+    };
+}
 
 export const patchUI = (plugin) => {
     const { getByName } = (window as any).aliucord.metro;
@@ -19,6 +34,11 @@ export const patchUI = (plugin) => {
                 key: "RichPresenceSettings",
                 title: "Rich Presence",
                 render: RichPresenceSettings
+            },
+            CustomOptionPage: {
+                key: "CustomOptionPage",
+                title: "Custom Option Page",
+                render: CustomOptionPage
             }
         }
     });
@@ -35,7 +55,7 @@ export const patchUI = (plugin) => {
                     leading={<FormRow.Icon source={getAssetId("Discord")}/>}
                     label="Rich Presence"
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.push("RichPresenceSettings", { navigation })}
+                    onPress={() => navigation.navigate("RichPresenceSettings", { navigation, L: "L" })}
                 />
             </>)
         });
