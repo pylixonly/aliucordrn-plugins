@@ -14,15 +14,25 @@ export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
     
     rpcClient = new RPCClient();
-    lfmClient = new LastFMClient("615322f0047e12aedbc610d9d71f7430").setUsername("slyde99");
     ytmClient = new YoutubeClient();
+    lfmClient;
 
     public async init() {
-        this.lfmClient.clear();
-        await this.rpcClient.sendRPC();
+        this.lfmClient?.clear();
+        this.lfmClient = new LastFMClient(
+            this.settings.get("lastfm_apikey", "615322f0047e12aedbc610d9d71f7430")
+        ).setUsername(this.settings.get("lastfm_username", ""));
 
-        if (this.settings.get("rpc_enabled", false)) {
-            this.logger.info("Rich Presence is enabled.");
+        await this.rpcClient.sendRPC();
+    
+        if (this.settings.get("rpc_enabled", false) === false) {
+            return;
+        }
+
+        this.logger.info("Starting RPC...");
+
+        if (this.settings.get("rpc_mode", "none") === "custom") {
+            this.logger.info("custom");
             await this.rpcClient.sendRPC({
                 name: this.settings.get("rpc_AppName", "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
@@ -47,28 +57,30 @@ export default class RichPresence extends Plugin {
             return;
         } 
 
-        this.logger.info("Streaming last.fm...");
+        if (this.settings.get("rpc_mode", "none") === "lastfm") {
+            this.logger.info("Streaming last.fm...");
 
-        await this.lfmClient.stream(async (track) => {
-            if (!track) {
-                await this.rpcClient.sendRPC();
-                return;
-            }
-
-            if (true && !track.albumArt) {
-                const matching = await this.ytmClient.findYoutubeEquivalent(track);
-
-                if (matching) {
-                    track = this.ytmClient.applyToTrack(matching, track);
-                } else {
-                    this.logger.info(`${track.artist} - ${track.name} has no album art.`)
+            await this.lfmClient.stream(async (track) => {
+                if (!track) {
+                    await this.rpcClient.sendRPC();
+                    return;
                 }
-            }
 
-            track.albumArt ??= "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
+                if (true && !track.albumArt) {
+                    const matching = await this.ytmClient.findYoutubeEquivalent(track);
 
-            await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
-        });
+                    if (matching) {
+                        track = this.ytmClient.applyToTrack(matching, track);
+                    } else {
+                        this.logger.info(`${track.artist} - ${track.name} has no album art.`)
+                    }
+                }
+
+                track.albumArt ??= "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
+
+                await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
+            });
+        }
     }
 
     private update() {

@@ -15,6 +15,10 @@ export default class LastFMClient {
     }
 
     setUsername(username: string) {
+        if (username === "") {
+            this.logger.error(`[instance: ${this.apiKey}] Username is empty`);
+            throw new Error('Username is empty');
+        }
         this.username = username;
         return this;
     }

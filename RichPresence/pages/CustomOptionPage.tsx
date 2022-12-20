@@ -8,8 +8,7 @@ export default function CustomOptionPage() {
     const settings = getSettings();
 
     return (<>
-    {/*
-        // @ts-ignore */}
+        {/*// @ts-ignore */}
         <ScrollView>
             <FormSection title="Custom Option Page">
                 <FormInput

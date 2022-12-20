@@ -3,6 +3,7 @@ import { findInReactTree, getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
 import CustomOptionPage from "./CustomOptionPage";
+import LastFMConfigurePage from "./LastFMConfigurePage";
 import RichPresenceSettings from "./RichPresenceSettings";
 
 export const getSettings = () => {
@@ -39,6 +40,11 @@ export const patchUI = (plugin) => {
                 key: "CustomOptionPage",
                 title: "Custom Option Page",
                 render: CustomOptionPage
+            },
+            LastFMConfigurePage: {
+                key: "LastFMConfigurePage",
+                title: "Configure LastFM",
+                render: LastFMConfigurePage
             }
         }
     });
@@ -52,7 +58,7 @@ export const patchUI = (plugin) => {
 
             children.splice(4, 0, <>
                 <FormRow 
-                    leading={<FormRow.Icon source={getAssetId("Discord")}/>}
+                    leading={<FormRow.Icon source={getAssetId("ic_link")}/>}
                     label="Rich Presence"
                     trailing={FormRow.Arrow}
                     onPress={() => navigation.navigate("RichPresenceSettings", { navigation, L: "L" })}
