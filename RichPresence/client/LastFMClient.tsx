@@ -1,6 +1,7 @@
 import { Logger } from "aliucord/utils/Logger";
 import { RPLogger } from "../utils/Logger";
 import { Activity, ActivityTypes } from "../types/Activity";
+import { Track } from "../types/Track";
 
 export default class LastFMClient {
     apiKey: string;
@@ -103,17 +104,17 @@ export default class LastFMClient {
         }
     }
 
-    mapToRPC(track): Activity | null {
+    mapToRPC(track : Track, settings): Activity | null {
         return track ? {
             name: 'Music',
-            type: ActivityTypes.LISTENING,
+            type: settings.get("lastfm_listening_to", false) ? ActivityTypes.LISTENING : ActivityTypes.GAME,
             details: track.name,
             state: `by ${track.artist}`,
-            ...(track.album ? {
+            ...(settings.get("lastfm_show_album_art", true) && track.album ? {
                 assets: {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
-                    ...(track.loved && false ? { 
+                    ...(track.loved && false ? { // todo
                         small_image: 'loved',
                         small_text: 'Loved' 
                     } : {})
@@ -122,13 +123,13 @@ export default class LastFMClient {
             ...(track.duration !== 0 ? { 
                 timestamps: {
                     start: (Date.now() / 1000 | 0),
-                    end: (Date.now() / 1000 | 0) + track.duration
+                    end: (Date.now() / 1000 | 0) + track.duration!
                 }
             }: {}),
-            buttons: [
-                { label: 'Listen', url: track.url }
-            ],
-            application_id: "463151177836658699"
+            ...(settings.get("lastfm_add_ytm_button", false) ?  { buttons: [
+                { label: 'Listen on Youtube Music', url: track.ytUrl }
+            ]} : {}),
+            application_id: settings.get("rpc_AppID", "463151177836658699")
         } : null
     }
 

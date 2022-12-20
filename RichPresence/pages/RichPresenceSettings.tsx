@@ -67,23 +67,23 @@ export default function RichPresenceSettings({ navigation }) {
             </FormSection>
             <FormSection title="Configurations">
                 <FormInput
-                    title="Application ID [REQUIRED]"
+                    title="Discord Application ID [Optional]"
                     value={settings.get("rpc_AppID", "")}
-                    placeholder="Insert Application ID"
+                    placeholder="463151177836658699"
                     onChange={v => {
-                        settings.set("rpc_AppID", v);
+                        settings.set("rpc_AppID",  v != "" ? v : "463151177836658699");
                     }}
                 />
                 <FormRow
                     label="Configure Custom Rich Presence"
                     subLabel="Show how cool you are to your friends by customizing your Rich Presence."
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.push("CustomOptionPage")}
+                    onPress={() => navigation.push("RichPresenceSetupPage")}
                 />
                 <FormDivider />
                 <FormRow
                     label="Configure Last.fm settings"
-                    subLabel="Show what you're listening to on Last.fm."
+                    subLabel="Show what you're listening to through Last.fm."
                     trailing={FormRow.Arrow}
                     onPress={() => navigation.push("LastFMConfigurePage")}
                 />

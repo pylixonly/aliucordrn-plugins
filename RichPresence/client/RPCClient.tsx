@@ -52,26 +52,25 @@ export default class RPCClient {
     }
 
     private async updateRPC(activity?: any) {
+        const wasNull = !activity && !this.lastRPC;
         this.lastRPC = activity;
         await FluxDispatcher.dispatch({
             type: "LOCAL_ACTIVITY_UPDATE",
             activity: activity
         });
 
-        RPLogger.info(activity ? "Updated presence with params:" : "Stopped presence:", activity);
+        !wasNull && RPLogger.info(activity ? "Updated presence with params:" : "Stopped presence:", activity);
     }
 
     async lookupAssets(applicationId: string, names: string[]): Promise<(string | undefined)[]> {
         const assetLinks: (string | undefined)[] = [];
         for (const name of names) {
             let url: URL;
-            RPLogger.log("Looking up asset:", name);
 
             if (name === "" || name === undefined) {
                 assetLinks.push(undefined);
                 continue;
             }
-            RPLogger.info(`${name} is not empty.`)
 
             try {
                 url = new URL(name);

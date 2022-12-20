@@ -4,27 +4,19 @@ import { getSettings } from "./patches";
 
 const { FormSection, FormInput } = Forms;
 
-export default function CustomOptionPage() {
+export default function RichPresenceSetupPage() {
     const settings = getSettings();
 
     return (<>
         {/*// @ts-ignore */}
         <ScrollView>
-            <FormSection title="Custom Option Page">
+            <FormSection title="Rich Presence Setup">
                 <FormInput
-                    title="App Name"
-                    value={settings.get("rpc_AppName", "")}
-                    placeholder="Insert App Name"
+                    title="Application Name"
+                    value={settings.get("rpc_AppName", "Discord")}
+                    placeholder="Discord"
                     onChange={v => {
                         settings.set("rpc_AppName", v);
-                    }}
-                />
-                <FormInput
-                    title="State"
-                    value={settings.get("rpc_State", "")}
-                    placeholder="Insert State"
-                    onChange={v => {
-                        settings.set("rpc_State", v);
                     }}
                 />
                 <FormInput
@@ -36,6 +28,14 @@ export default function CustomOptionPage() {
                     }}
                 />
                 <FormInput
+                    title="State"
+                    value={settings.get("rpc_State", "")}
+                    placeholder="Insert State"
+                    onChange={v => {
+                        settings.set("rpc_State", v);
+                    }}
+                />
+                <FormInput
                     title="Large Image"
                     value={settings.get("rpc_LargeImage", "")}
                     placeholder="Insert Large Image"
@@ -43,14 +43,14 @@ export default function CustomOptionPage() {
                         settings.set("rpc_LargeImage", v);
                     }}
                 />
-                <FormInput
+                { !!settings.get("rpc_LargeImage", false) && <FormInput
                     title="Large Image Text"
                     value={settings.get("rpc_LargeImageText", "")}
                     placeholder="Insert Large Image Text"
                     onChange={v => {
                         settings.set("rpc_LargeImageText", v);
                     }}
-                />
+                /> }
                 <FormInput
                     title="Small Image"
                     value={settings.get("rpc_SmallImage", "")}
@@ -59,12 +59,28 @@ export default function CustomOptionPage() {
                         settings.set("rpc_SmallImage", v);
                     }}
                 />
-                <FormInput
+                { !!settings.get("rpc_SmallImage", false) && <FormInput
                     title="Small Image Text"
                     value={settings.get("rpc_SmallImageText", "")}
                     placeholder="Insert Small Image Text"
                     onChange={v => {
                         settings.set("rpc_SmallImageText", v);
+                    }}
+                /> }
+                <FormInput
+                    title="Start Timestamp"
+                    value={settings.get("rpc_StartTimestamp", "")}
+                    placeholder="Insert Start Timestamp"
+                    onChange={v => {
+                        settings.set("rpc_StartTimestamp", v);
+                    }}
+                />
+                <FormInput
+                    title="End Timestamp"
+                    value={settings.get("rpc_EndTimestamp", "")}
+                    placeholder="Insert End Timestamp"
+                    onChange={v => {
+                        settings.set("rpc_EndTimestamp", v);
                     }}
                 />
                 <FormInput

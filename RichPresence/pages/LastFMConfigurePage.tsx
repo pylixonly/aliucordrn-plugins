@@ -2,7 +2,7 @@ import { getSettings } from "./patches";
 import { React, ReactNative, Forms } from "aliucord/metro";
 
 const { ScrollView } = ReactNative;
-const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
+const { FormSection, FormInput, FormRow, FormSwitch, FormDivider } = Forms;
 
 export default function LastFMConfigurePage() {
 const settings = getSettings();
@@ -20,11 +20,11 @@ const settings = getSettings();
                         }}
                     />
                     <FormInput
-                        title="LastFM API Key"
+                        title="LastFM API Key [optional]"
                         value={settings.get("lastfm_apikey", "")}
-                        placeholder="Insert LastFM API Key"
+                        placeholder="615322f0047e12aedbc610d9d71f7430"
                         onChange={v => {
-                            v !== "" && settings.set("lastfm_apikey", v);
+                            settings.set("lastfm_apikey", v !== ""? v : "615322f0047e12aedbc610d9d71f7430");
                         }}
                     />
                 </FormSection>
@@ -33,18 +33,30 @@ const settings = getSettings();
                         label="Show album art"
                         subLabel="Show album art in the rich presence."
                         trailing={<FormSwitch
-                            value={settings.get("lastfm_show_album_art", false)}
+                            value={settings.get("lastfm_show_album_art", true)}
                             onValueChange={(v) => settings.set("lastfm_show_album_art", v)}
                         />}
                     />
-                    <FormRow
-                        label="Use Youtube as a fallback for album art"
-                        subLabel="If LastFM doesn't have an album art for the song, use Youtube as a fallback."
-                        trailing={<FormSwitch 
-                            value = {settings.get("lastfm_use_youtube", false)}
-                            onValueChange={(v) => settings.set("lastfm_use_youtube", v)}
-                        />}
-                    />
+                    { settings.get("lastfm_show_album_art", true) &&
+                        <FormRow
+                            label="Use Youtube as a fallback for album art"
+                            subLabel="If LastFM doesn't have an album art for the song, use Youtube as a fallback."
+                            trailing={<FormSwitch 
+                                value = {settings.get("lastfm_use_youtube", false)}
+                                onValueChange={(v) => settings.set("lastfm_use_youtube", v)} 
+                            />}
+                        />
+                    }
+                    { settings.get("lastfm_show_album_art", true) &&
+                        <FormInput
+                            title="Default album art"
+                            value={settings.get("lastfm_default_album_art", "")}
+                            placeholder="https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png"
+                            onChange={v => {
+                                settings.set("lastfm_default_album_art", v != ""? v : "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png");
+                            }}
+                        />
+                    }
                     <FormRow
                         label='"Listening to" instead of "Playing"'
                         subLabel="Use 'Listening to' instead of 'Playing' in the rich presence."

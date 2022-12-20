@@ -15,7 +15,7 @@ export default class YoutubeClient {
         return {
             ...track,
             albumArt: yt.albumArt,
-            url: `https://music.youtube.com/watch?v=${yt.videoId}`,
+            ytUrl: `https://music.youtube.com/watch?v=${yt.videoId}`,
             duration: yt.duration
         }
     }

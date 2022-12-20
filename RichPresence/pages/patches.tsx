@@ -2,7 +2,7 @@ import { React, Forms, getByProps } from "aliucord/metro";
 import { findInReactTree, getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
-import CustomOptionPage from "./CustomOptionPage";
+import RichPresenceSetupPage from "./RichPresenceSetupPage";
 import LastFMConfigurePage from "./LastFMConfigurePage";
 import RichPresenceSettings from "./RichPresenceSettings";
 
@@ -36,10 +36,10 @@ export const patchUI = (plugin) => {
                 title: "Rich Presence",
                 render: RichPresenceSettings
             },
-            CustomOptionPage: {
-                key: "CustomOptionPage",
-                title: "Custom Option Page",
-                render: CustomOptionPage
+            RichPresenceSetupPage: {
+                key: "RichPresenceSetupPage",
+                title: "Rich Presence Setup",
+                render: RichPresenceSetupPage
             },
             LastFMConfigurePage: {
                 key: "LastFMConfigurePage",

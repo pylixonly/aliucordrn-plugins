@@ -15,7 +15,7 @@ export default class RichPresence extends Plugin {
     
     rpcClient = new RPCClient();
     ytmClient = new YoutubeClient();
-    lfmClient;
+    lfmClient!: LastFMClient;
 
     public async init() {
         this.lfmClient?.clear();
@@ -32,7 +32,7 @@ export default class RichPresence extends Plugin {
         this.logger.info("Starting RPC...");
 
         if (this.settings.get("rpc_mode", "none") === "custom") {
-            this.logger.info("custom");
+            this.logger.info("Starting user-set RPC...");
             await this.rpcClient.sendRPC({
                 name: this.settings.get("rpc_AppName", "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
@@ -66,7 +66,10 @@ export default class RichPresence extends Plugin {
                     return;
                 }
 
-                if (true && !track.albumArt) {
+                if (this.settings.get("lastfm_use_youtube", false)
+                    && this.settings.get("lastfm_show_album_art", true) 
+                    && !track.albumArt
+                ) {
                     const matching = await this.ytmClient.findYoutubeEquivalent(track);
 
                     if (matching) {
@@ -74,11 +77,14 @@ export default class RichPresence extends Plugin {
                     } else {
                         this.logger.info(`${track.artist} - ${track.name} has no album art.`)
                     }
+                } else if (this.settings.get("lastfm_show_album_art", true) && !track.albumArt) {
+                    track.albumArt ??= this.settings.get("lastfm_default_album_art", 
+                        "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png");
                 }
 
-                track.albumArt ??= "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
+                track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
 
-                await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
+                await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings));
             });
         }
     }

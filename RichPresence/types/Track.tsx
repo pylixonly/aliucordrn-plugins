@@ -8,6 +8,7 @@ export type Track = {
     duration?: number;
     nowPlaying: boolean;
     loved: boolean;
+    ytUrl: string;
 };
 
 export type YoutubeTrack = {
