@@ -59,7 +59,7 @@ const settings = getSettings();
                     }
                     <FormRow
                         label='"Listening to" instead of "Playing"'
-                        subLabel="Use 'Listening to' instead of 'Playing' in the rich presence."
+                        subLabel="Use 'Listening to' instead of 'Playing' in the rich presence. [WARNING: Real client never sends 'Listening to' status]"
                         trailing={<FormSwitch
                             value={settings.get("lastfm_listening_to", false)}
                             onValueChange={(v) => settings.set("lastfm_listening_to", v)}
