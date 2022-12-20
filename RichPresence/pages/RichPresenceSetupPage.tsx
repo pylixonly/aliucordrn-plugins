@@ -2,7 +2,7 @@ import { React, Forms } from "aliucord/metro";
 import { ScrollView } from "react-native";
 import { getSettings } from "./patches";
 
-const { FormSection, FormInput } = Forms;
+const { FormSection, FormInput, FormRow } = Forms;
 
 export default function RichPresenceSetupPage() {
     const settings = getSettings();
@@ -70,10 +70,17 @@ export default function RichPresenceSetupPage() {
                 <FormInput
                     title="Start Timestamp"
                     value={settings.get("rpc_StartTimestamp", "")}
-                    placeholder="Insert Start Timestamp"
+                    placeholder="since_start"
                     onChange={v => {
                         settings.set("rpc_StartTimestamp", v);
                     }}
+                />
+                <FormRow
+                    label="Use current time as start timestamp" 
+                    onPress={() => {
+                        settings.set("rpc_StartTimestamp", String(Date.now() / 1000 | 0));
+                    }}
+                    trailing={FormRow.Arrow}
                 />
                 <FormInput
                     title="End Timestamp"

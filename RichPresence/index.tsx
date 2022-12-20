@@ -40,13 +40,17 @@ export default class RichPresence extends Plugin {
         if (this.settings.get("rpc_mode", "none") === "custom") {
             this.logger.info("Starting user-set RPC...");
 
+            const startTimestamp = this.settings.get("rpc_StartTimestamp", "since_start");
+            const endTimestamp = this.settings.get("rpc_EndTimestamp", "");
+
             await this.rpcClient.sendRPC({
                 name: ifEmpty(this.settings.get("rpc_AppName", ""), "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
                 state: this.settings.get("rpc_State", ""),
                 details: this.settings.get("rpc_Details", ""),
                 timestamps: {
-                    start: Date.now() / 1000 | 0 // 'OR 0' rounds to integer
+                    start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
+                    ...(endTimestamp !== "" && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
                 },
                 ...(this.settings.get("rpc_LargeImage", undefined) ? { assets: {
                     large_image: this.settings.get("rpc_LargeImage", undefined),
