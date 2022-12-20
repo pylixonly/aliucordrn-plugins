@@ -9,6 +9,7 @@ import { patchUI } from "./pages/patches";
 import { useSettings } from "aliucord/api";
 import { ActivityTypes } from "./types/Activity";
 import { clearInterval } from "timers";
+import { ifEmpty } from "./utils/ifEmpty";
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
@@ -17,10 +18,15 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
     lfmClient!: LastFMClient;
 
+    defaults = {
+        lastfm_apikey: "615322f0047e12aedbc610d9d71f7430",
+        discord_application_id: "463151177836658699",
+    }
+
     public async init() {
         this.lfmClient?.clear();
         this.lfmClient = new LastFMClient(
-            this.settings.get("lastfm_apikey", "615322f0047e12aedbc610d9d71f7430")
+            this.settings.get("lastfm_apikey", this.defaults.lastfm_apikey)
         ).setUsername(this.settings.get("lastfm_username", ""));
 
         await this.rpcClient.sendRPC();
@@ -35,7 +41,7 @@ export default class RichPresence extends Plugin {
             this.logger.info("Starting user-set RPC...");
 
             await this.rpcClient.sendRPC({
-                name: this.settings.get("rpc_AppName", "Discord"),
+                name: ifEmpty(this.settings.get("rpc_AppName", ""), "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
                 state: this.settings.get("rpc_State", ""),
                 details: this.settings.get("rpc_Details", ""),
@@ -52,7 +58,7 @@ export default class RichPresence extends Plugin {
                     { label: this.settings.get("rpc_Button1Text", ""), url: this.settings.get("rpc_Button1URL", "")},
                     { label: this.settings.get("rpc_Button2Text", ""), url: this.settings.get("rpc_Button2URL", "")}
                 ],
-                application_id: this.settings.get("rpc_AppID", "463151177836658699")
+                application_id: ifEmpty(this.settings.get("rpc_AppID", ""), this.defaults.discord_application_id)
             });
 
             return;
@@ -72,7 +78,6 @@ export default class RichPresence extends Plugin {
                     && !track.albumArt
                 ) {
                     const matching = await this.ytmClient.findYoutubeEquivalent(track);
-
                     if (matching) {
                         track = this.ytmClient.applyToTrack(matching, track);
                     } else {

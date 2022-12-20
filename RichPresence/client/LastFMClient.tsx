@@ -2,6 +2,8 @@ import { Logger } from "aliucord/utils/Logger";
 import { RPLogger } from "../utils/Logger";
 import { Activity, ActivityTypes } from "../types/Activity";
 import { Track } from "../types/Track";
+import { ifEmpty } from "../utils/ifEmpty";
+import RichPresence from "..";
 
 export default class LastFMClient {
     apiKey: string;
@@ -11,6 +13,10 @@ export default class LastFMClient {
     updateInterval?: NodeJS.Timer;
 
     constructor(apiKey) {
+        if (!apiKey || apiKey === "") {
+            apiKey = RichPresence.classInstance.defaults.lastfm_apikey;
+        }
+            
         this.apiKey = apiKey;
         this.logger = RPLogger;
     }
@@ -121,7 +127,7 @@ export default class LastFMClient {
             ...(settings.get("lastfm_add_ytm_button", false) ?  { buttons: [
                 { label: 'Listen on Youtube Music', url: track.ytUrl }
             ]} : {}),
-            application_id: settings.get("rpc_AppID", "463151177836658699")
+            application_id: ifEmpty(settings.get("rpc_AppID", ""), RichPresence.classInstance.defaults.discord_application_id)
         } : null
     }
 

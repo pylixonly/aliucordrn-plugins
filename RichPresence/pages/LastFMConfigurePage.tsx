@@ -24,7 +24,7 @@ const settings = getSettings();
                         value={settings.get("lastfm_apikey", "")}
                         placeholder="615322f0047e12aedbc610d9d71f7430"
                         onChange={v => {
-                            settings.set("lastfm_apikey", v !== ""? v : "615322f0047e12aedbc610d9d71f7430");
+                            settings.set("lastfm_apikey", v);
                         }}
                     />
                 </FormSection>

@@ -26,11 +26,6 @@ export default function RichPresenceSettings({ navigation }) {
                         value = {settings.get("rpc_enabled", false)}
                         onValueChange={v => {
                             Toasts.open({ content: "Rich Presence is now " + (v ? "enabled" : "disabled") + "."})
-                            if (v && settings.get("rpc_AppID", "") === "") {
-                                Toasts.open({ content: "Please insert an App ID before enabling Rich Presence.", source: getAssetId("Small")})
-                                return;
-                            }
-
                             if (v && settings.get("rpc_mode", "none") == "none") {
                                 Toasts.open({ content: "Please select a mode before enabling Rich Presence.", source: getAssetId("Small")})
                                 return;
@@ -71,7 +66,7 @@ export default function RichPresenceSettings({ navigation }) {
                     value={settings.get("rpc_AppID", "")}
                     placeholder="463151177836658699"
                     onChange={v => {
-                        settings.set("rpc_AppID",  v != "" ? v : "463151177836658699");
+                        settings.set("rpc_AppID", v);
                     }}
                 />
                 <FormRow
