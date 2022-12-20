@@ -4,6 +4,7 @@ import { Activity, ActivityTypes } from "../types/Activity";
 import { Track } from "../types/Track";
 import { ifEmpty } from "../utils/ifEmpty";
 import RichPresence from "..";
+import { FluxDispatcher } from "aliucord/metro";
 
 export default class LastFMClient {
     apiKey: string;
@@ -61,7 +62,6 @@ export default class LastFMClient {
     clear() {
         this.updateInterval && clearInterval(this.updateInterval);
     }
-
     
     async fetchCurrentScrobble() {
         if (!this.username) {

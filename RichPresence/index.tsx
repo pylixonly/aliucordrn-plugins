@@ -1,5 +1,5 @@
 import { Plugin } from "aliucord/entities";
-import { UserStore, FluxDispatcher, getByProps } from "aliucord/metro";
+import { UserStore, FluxDispatcher, getByProps, getModule } from "aliucord/metro";
 import { before } from "aliucord/utils/patcher";
 import LastFMClient from "./client/LastFMClient";
 import YoutubeClient from "./client/YoutubeClient";
@@ -61,7 +61,7 @@ export default class RichPresence extends Plugin {
                 buttons: [
                     { label: this.settings.get("rpc_Button1Text", ""), url: this.settings.get("rpc_Button1URL", "")},
                     { label: this.settings.get("rpc_Button2Text", ""), url: this.settings.get("rpc_Button2URL", "")}
-                ],
+                ].filter(x => x.label !== ""),
                 application_id: ifEmpty(this.settings.get("rpc_AppID", ""), this.defaults.discord_application_id)
             });
 
@@ -99,10 +99,27 @@ export default class RichPresence extends Plugin {
         }
     }
 
+    patchListeningTo() {
+        this.patcher.before(FluxDispatcher, "dispatch", (_, event) => {
+            const listeningToEnabled = this.settings.get("lastfm_listening_to", false);
+            const lastfmEnabled = this.settings.get("rpc_mode", "none") === "lastfm";
+
+            if (listeningToEnabled && lastfmEnabled && event.type === "LOCAL_ACTIVITY_UPDATE" && event.type) {
+                const activity = event.activity;
+                if (activity && activity.type === ActivityTypes.GAME) {
+                    activity.type = ActivityTypes.LISTENING;
+                    event.activity = activity;
+                }
+            }
+        })
+    }
+
     public start() {
         RichPresence.classInstance = this;
         setLogger(this.logger);
+
         patchUI(this);
+        this.patchListeningTo()
 
         if (UserStore.getCurrentUser()) {
             this.init();
