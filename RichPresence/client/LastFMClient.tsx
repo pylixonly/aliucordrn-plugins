@@ -20,6 +20,7 @@ export default class LastFMClient {
     }
 
     async stream(callback): Promise<NodeJS.Timer> {
+        this.clear();
         let currentTrack = await this.fetchCurrentScrobble();
         if (currentTrack.nowPlaying)
             callback(currentTrack);

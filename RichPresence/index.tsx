@@ -19,8 +19,8 @@ export default class RichPresence extends Plugin {
 
     public async init() {
         this.lfmClient.clear();
-        this.rpcClient.sendRPC();
-        
+        await this.rpcClient.sendRPC();
+
         if (this.settings.get("rpc_enabled", false)) {
             this.logger.info("Rich Presence is enabled.");
             await this.rpcClient.sendRPC({
@@ -51,7 +51,7 @@ export default class RichPresence extends Plugin {
 
         await this.lfmClient.stream(async (track) => {
             if (!track) {
-                this.rpcClient.sendRPC();
+                await this.rpcClient.sendRPC();
                 return;
             }
 
@@ -67,7 +67,7 @@ export default class RichPresence extends Plugin {
 
             track.albumArt ??= "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png";
 
-            this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
+            await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
         });
     }
 

@@ -26,7 +26,7 @@ export default class YoutubeClient {
         this.logger.info(`Begin searching for ${searchParam} on Youtube...`);
         const search = await fetch(`${this.apiUrl}/search?part=snippet&q=${searchParam} "Provided to Youtube by"`)
         const results = await search.json();
-        
+
         if (results.items.length === 0) {
             this.logger.info(`No results found for ${searchParam}`);
             return null;

@@ -30,6 +30,7 @@ export default function RichPresenceSettings() {
             <FormSection title="Rich Presence Settings" android_noDivider={true}>
                 <FormRow
                     label="Enable Rich Presence"
+                    subLabel="Rich presence will be updated when this toggle is turned on or after your Discord client is restarted."
                     description="Enable Rich Presence"
                     trailing={<FormSwitch 
                         value = {settings.get("rpc_enabled", false)}
@@ -39,7 +40,6 @@ export default function RichPresenceSettings() {
                         }}
                     />}
                 />
-                <FormRow label="Rich presence will be updated when this toggle is turned on or after your Discord client is restarted." />
                 <FormDivider />
                 <FormInput
                     title="App Name"

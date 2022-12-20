@@ -24,6 +24,9 @@ export default class RPCClient {
 
             activity.assets.large_image = large_image ? large_image : undefined;
             activity.assets.small_image = small_image ? small_image : undefined;
+
+            if (activity.assets.large_text === "") activity.assets.large_text = undefined;
+            if (activity.assets.small_text === "") activity.assets.small_text = undefined;
         }
 
         let params: any = {
