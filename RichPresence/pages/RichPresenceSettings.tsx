@@ -3,9 +3,9 @@ import { getAssetId } from "aliucord/utils"
 import RichPresence from "..";
 import { getSettings } from "./patches";
 
-const { View, Text, ScrollView } = ReactNative;
+const { ScrollView } = ReactNative;
 
-const { FormRow, FormSection, FormSwitch, FormInput, FormDivider, FormText } = Forms;
+const { FormRow, FormSection, FormSwitch, FormInput, FormDivider } = Forms;
 const Toasts = (window as any).aliucord.metro.Toasts;
 
 // TODO: option for lfm

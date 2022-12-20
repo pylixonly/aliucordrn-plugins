@@ -33,6 +33,7 @@ export default class RichPresence extends Plugin {
 
         if (this.settings.get("rpc_mode", "none") === "custom") {
             this.logger.info("Starting user-set RPC...");
+
             await this.rpcClient.sendRPC({
                 name: this.settings.get("rpc_AppName", "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
@@ -89,32 +90,24 @@ export default class RichPresence extends Plugin {
         }
     }
 
-    private update() {
-
-    }
-
     public start() {
         RichPresence.classInstance = this;
         setLogger(this.logger);
         patchUI(this);
 
-        let initialized = false;
-
         if (UserStore.getCurrentUser()) {
             this.init();
-            initialized = true;
+        } else {
+            this.patcher.before(FluxDispatcher, 'dispatch', (_, event) => {
+                if (event.type === "CONNECTION_OPEN") {
+                    this.init();
+                }
+            });
         }
-
-        before(FluxDispatcher, 'dispatch', (_, event) => {
-            if (!initialized && event.type === "CONNECTION_OPEN") {
-                this.init();
-                initialized = true;
-            } else if (event.type === "PRESENCE_UPDATE") {
-                this.update();
-            }
-        });
     }
 
     public stop() {
+        this.lfmClient.clear();
+        this.rpcClient.sendRPC();
     }
 }

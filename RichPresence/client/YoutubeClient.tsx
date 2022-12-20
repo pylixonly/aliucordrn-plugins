@@ -1,4 +1,3 @@
-import { Logger } from "aliucord/utils/Logger";
 import { RPLogger } from "../utils/Logger";
 import { Track, YoutubeTrack } from "../types/Track";
 

@@ -22,9 +22,8 @@ export const getSettings = () => {
 export const patchUI = (plugin) => {
     const { getByName } = (window as any).aliucord.metro;
 
-    const Locale = getByProps("Messages");
     const Scenes = getByName("getScreens", { default: false });
-    const { FormSection, FormRow, FormDivider } = Forms;
+    const { FormRow } = Forms;
 
     const UserSettingsOverviewWrapper = getByName("UserSettingsOverviewWrapper", { default: false });
 

@@ -2,7 +2,7 @@ import { getSettings } from "./patches";
 import { React, ReactNative, Forms } from "aliucord/metro";
 
 const { ScrollView } = ReactNative;
-const { FormSection, FormInput, FormRow, FormSwitch, FormDivider } = Forms;
+const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
 
 export default function LastFMConfigurePage() {
 const settings = getSettings();

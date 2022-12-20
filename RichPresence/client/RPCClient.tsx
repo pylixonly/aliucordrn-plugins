@@ -1,7 +1,6 @@
 import { FluxDispatcher, getByProps } from "aliucord/metro";
 import { RPLogger } from "../utils/Logger";
 import { Activity } from "../types/Activity";
-import RichPresence from "..";
 
 export default class RPCClient {
     lastRPC: any;
