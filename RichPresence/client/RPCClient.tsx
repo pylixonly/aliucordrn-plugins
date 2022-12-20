@@ -16,20 +16,15 @@ export default class RPCClient {
             return;
         }
 
-        RPLogger.log("Sending RPC:", activity);
-        RPLogger.log("Acitivity assets loading...");
         if (activity.assets !== undefined) {
             const [large_image, small_image] = await this.lookupAssets(
                 activity.application_id, 
                 [activity.assets.large_image!, activity.assets.small_image!]
             );
-            RPLogger.log("Acitivity assets loaded.", large_image, small_image);
 
             activity.assets.large_image = large_image ? large_image : undefined;
             activity.assets.small_image = small_image ? small_image : undefined;
         }
-
-        RPLogger.info("Sending RPC:", activity);
 
         let params: any = {
             name: activity.name,
