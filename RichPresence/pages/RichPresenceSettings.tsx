@@ -25,7 +25,6 @@ export default function RichPresenceSettings({ navigation }) {
                     trailing={<FormSwitch 
                         value = {settings.get("rpc_enabled", false)}
                         onValueChange={v => {
-                            Toasts.open({ content: "Rich Presence is now " + (v ? "enabled" : "disabled") + "."})
                             if (v && settings.get("rpc_mode", "none") == "none") {
                                 Toasts.open({ content: "Please select a mode before enabling Rich Presence.", source: getAssetId("Small")})
                                 return;
@@ -38,6 +37,7 @@ export default function RichPresenceSettings({ navigation }) {
 
                             settings.set("rpc_enabled", v);
                             RichPresence.classInstance.init();
+                            Toasts.open({ content: "Rich Presence is now " + (v ? "enabled" : "disabled") + "."})
                         }}
                     />}
                 />
@@ -62,7 +62,7 @@ export default function RichPresenceSettings({ navigation }) {
             </FormSection>
             <FormSection title="Configurations">
                 <FormInput
-                    title="Discord Application ID [Optional]"
+                    title="Discord Application ID [optional]"
                     value={settings.get("rpc_AppID", "")}
                     placeholder="463151177836658699"
                     onChange={v => {
