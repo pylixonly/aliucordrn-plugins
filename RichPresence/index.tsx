@@ -85,7 +85,7 @@ export default class RichPresence extends Plugin {
 
                     const mapped = this.lfmClient.mapToRPC(track, this.settings);
                     if (!!mapped) this.rpcClient.sendRPC(mapped);
-                    else this.rpcClient.clearRPC();
+                    else this.rpcClient.clearRPC(/*silent:*/ true);
                 });
                 break;
             case "none":

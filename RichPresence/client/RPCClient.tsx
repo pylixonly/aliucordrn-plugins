@@ -17,8 +17,6 @@ export default class RPCClient {
                 activity.type = this.lastActivityType;
                 this.lastActivityType = ActivityTypes.GAME;
             }
-
-            type === "LOCAL_ACTIVITY_UPDATE" && RPLogger.info("Dispatching RPC: ", activity);
         });
     }
 
