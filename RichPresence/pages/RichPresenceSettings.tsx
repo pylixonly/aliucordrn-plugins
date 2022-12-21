@@ -35,8 +35,7 @@ export default function RichPresenceSettings({ navigation }) {
                             }
 
                             settings.set("rpc_enabled", v);
-                            RichPresence.classInstance.init();
-                            Toasts.open({ content: "Rich Presence is now " + (v ? "enabled" : "disabled")})
+                            RichPresence.classInstance.init(true);
                         }}
                     />}
                 />
@@ -46,7 +45,7 @@ export default function RichPresenceSettings({ navigation }) {
                         subLabel="Use this to apply changes to your rich presence settings."
                         trailing={FormRow.Arrow}
                         onPress={() => {
-                            RichPresence.classInstance.init();
+                            RichPresence.classInstance.init(true);
                             Toasts.open({ content: "Rich presence updated."})
                         }}
                     />

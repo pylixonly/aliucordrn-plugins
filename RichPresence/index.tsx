@@ -18,14 +18,14 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
     lfmClient!: LastFMClient;
 
-    public init() {
+    public async init(trigerred = false) {
         this.lfmClient?.clear();
         
         this.lfmClient = new LastFMClient(
             RichPresenceSettings.LastFm.apiKey(),
         ).setUsername(RichPresenceSettings.LastFm.username());
         
-        this.rpcClient.clearRPC();
+        await this.rpcClient.clearRPC(true);
 
         if (!RichPresenceSettings.Enabled()) {
             return;
@@ -50,7 +50,7 @@ export default class RichPresence extends Plugin {
                         start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
                         ...(endTimestamp !== "" && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
                     },
-                    ...(settings.largeImage() ? { assets: {
+                    ...(settings.largeImage() && settings.smallImage() ? { assets: {
                         large_image: settings.largeImage(),
                         large_text: settings.largeImageText(),
                         small_image: settings.smallImage(),
@@ -67,7 +67,7 @@ export default class RichPresence extends Plugin {
 
                 this.lfmClient.stream(async (track) => {
                     if (!track) {
-                        this.rpcClient.clearRPC();
+                        await this.rpcClient.clearRPC(/*silent*/ true);
                         return;
                     }
 
@@ -83,9 +83,7 @@ export default class RichPresence extends Plugin {
 
                     track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
 
-                    const mapped = this.lfmClient.mapToRPC(track, this.settings);
-                    if (!!mapped) this.rpcClient.sendRPC(mapped);
-                    else this.rpcClient.clearRPC(/*silent:*/ true);
+                    await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings), trigerred);
                 });
                 break;
             case "none":

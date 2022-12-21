@@ -92,8 +92,8 @@ export default class LastFMClient {
         }
     }
 
-    mapToRPC(track : Track, settings): Activity | null {
-        return track ? {
+    mapToRPC(track : Track, settings): Activity {
+        return {
             name: 'Music',
             type: RichPresenceSettings.LastFm.listeningTo() ? ActivityTypes.LISTENING : ActivityTypes.GAME,
             details: track.name,
@@ -111,7 +111,7 @@ export default class LastFMClient {
             ...(RichPresenceSettings.LastFm.linkYtmSearch() ?  { buttons: [
                 { label: 'Listen on Youtube Music', url: track.ytUrl }
             ]} : {}),
-        } : null
+        }
     }
 
     polishAlbumArt(albumArt) {

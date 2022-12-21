@@ -1,0 +1,5 @@
+{
+    "name": "NoIdle",
+    "description": "Hides the fact that you are idling (Discord running in background)",
+    "version": "0.1.0"
+}

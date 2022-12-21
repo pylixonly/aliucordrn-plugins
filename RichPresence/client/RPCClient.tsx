@@ -5,6 +5,7 @@ import RichPresence from "..";
 import { Patcher } from "aliucord/api";
 import { settings as RichPresenceSettings } from "../utils/Settings";
 
+const Toasts = (window as any).aliucord.metro.Toasts;
 const { SET_ACTIVITY } = getModule(x => !!x.SET_ACTIVITY);
 const { handler } = SET_ACTIVITY;
 
@@ -20,7 +21,7 @@ export default class RPCClient {
         });
     }
 
-    public sendRPC(activity: Activity) {
+    public async sendRPC(activity: Activity, silent = false) {
         // Remove empty properties/arrays
         Object.keys(activity).forEach((k) => activity[k] === undefined 
                                             || activity[k].length === 0
@@ -33,12 +34,11 @@ export default class RPCClient {
         }
 
         this.lastActivityType = activity.type ?? ActivityTypes.GAME;
-        RPLogger.info("Sending RPC", activity);
-        this.sendRequest(activity);
+        await this.sendRequest(activity, silent);
     }
 
-    private sendRequest(activity?: Activity) {
-        handler({
+    private async sendRequest(activity?: Activity, silent = false) {
+        const result = await handler({
             isSocketConnected: () => true,
             socket: {
                 id: 110,
@@ -53,14 +53,15 @@ export default class RPCClient {
                 activity: activity ?? null
             }
         });
-    }
-
-    public clearRPC(silent = false) {
-        this.lastActivityType = ActivityTypes.GAME;
-        this.sendRequest(undefined);
 
         if (!silent) {
-            RPLogger.info("Cleared RPC");
+            RPLogger.info(`RPC ${activity ? "updated" : "cleared"}`, result);
+            Toasts.open({ content: `Rich presence ${activity ? "updated" : "cleared"}`})
         }
+    }
+
+    public async clearRPC(silent = false) {
+        this.lastActivityType = ActivityTypes.GAME;
+        await this.sendRequest(undefined, silent);
     }
 }
