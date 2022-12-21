@@ -6,19 +6,6 @@ import RichPresenceSetupPage from "./RichPresenceSetupPage";
 import LastFMConfigurePage from "./LastFMConfigurePage";
 import RichPresenceSettings from "./RichPresenceSettings";
 
-export const getSettings = () => {
-    const [, forceUpdate] = React.useReducer(x => x + 1, 0);
-    return {
-        get(key, defaultValue) {
-            return RichPresence.classInstance.settings.get(key, defaultValue);
-        },
-        set(key, value) {
-            RichPresence.classInstance.settings.set(key, value);
-            forceUpdate(); 
-        }
-    };
-}
-
 export const patchUI = (plugin) => {
     const { getByName } = (window as any).aliucord.metro;
 

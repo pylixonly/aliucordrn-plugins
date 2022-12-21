@@ -1,7 +1,7 @@
 import { React, ReactNative, Styles, Forms } from "aliucord/metro"
 import { getAssetId } from "aliucord/utils"
 import RichPresence from "..";
-import { getSettings } from "./patches";
+import { getSettings } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
 

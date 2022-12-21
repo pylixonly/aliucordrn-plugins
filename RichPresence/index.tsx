@@ -9,7 +9,7 @@ import { patchUI } from "./pages/patches";
 import { useSettings } from "aliucord/api";
 import { ActivityTypes } from "./types/Activity";
 import { clearInterval } from "timers";
-import { ifEmpty } from "./utils/ifEmpty";
+import { settings as RichPresenceSettings, defaults } from "./utils/Settings";
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
@@ -18,93 +18,87 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
     lfmClient!: LastFMClient;
 
-    defaults = {
-        lastfm_apikey: "615322f0047e12aedbc610d9d71f7430",
-        discord_application_id: "1054951789318909972",
-    }
-
-    public async init() {
+    public init() {
         this.lfmClient?.clear();
+        
         this.lfmClient = new LastFMClient(
-            this.settings.get("lastfm_apikey", this.defaults.lastfm_apikey)
-        ).setUsername(this.settings.get("lastfm_username", ""));
-
+            RichPresenceSettings.LastFm.apiKey(),
+        ).setUsername(RichPresenceSettings.LastFm.username());
+        
         this.rpcClient.clearRPC();
-    
-        if (this.settings.get("rpc_enabled", false) === false) {
+
+        if (!RichPresenceSettings.Enabled()) {
             return;
         }
 
         this.logger.info("Starting RPC...");
 
-        if (this.settings.get("rpc_mode", "none") === "custom") {
-            this.logger.info("Starting user-set RPC...");
+        switch (RichPresenceSettings.Mode()) {
+            case "custom":
+                const settings = RichPresenceSettings.Custom;
+                this.logger.info("Starting user-set RPC...");
 
-            const startTimestamp = ifEmpty(this.settings.get("rpc_StartTimestamp", ""), "since_start");
-            const endTimestamp = this.settings.get("rpc_EndTimestamp", "");
+                const startTimestamp = settings.startTimestamp();
+                const endTimestamp = settings.endTimestamp();
 
-            this.rpcClient.sendRPC({
-                name: ifEmpty(this.settings.get("rpc_AppName", ""), "Discord"),
-                type: ActivityTypes.GAME, // PLAYING
-                state: this.settings.get("rpc_State", ""),
-                details: this.settings.get("rpc_Details", ""),
-                timestamps: {
-                    start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
-                    ...(endTimestamp !== "" && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
-                },
-                ...(this.settings.get("rpc_LargeImage", undefined) ? { assets: {
-                    large_image: this.settings.get("rpc_LargeImage", undefined),
-                    large_text: this.settings.get("rpc_LargeImageText", undefined),
-                    small_image: this.settings.get("rpc_SmallImage", undefined),
-                    small_text: this.settings.get("rpc_SmallImageText", undefined)
-                }} : {}),
-                buttons: [
-                    { label: this.settings.get("rpc_Button1Text", ""), url: this.settings.get("rpc_Button1URL", "")},
-                    { label: this.settings.get("rpc_Button2Text", ""), url: this.settings.get("rpc_Button2URL", "")}
-                ].filter(x => x.label !== ""),
-                application_id: ifEmpty(this.settings.get("rpc_AppID", ""), this.defaults.discord_application_id)
-            });
+                this.rpcClient.sendRPC({
+                    name: settings.appName(),
+                    type: ActivityTypes.GAME, // PLAYING
+                    state: settings.state(),
+                    details: settings.details(),
+                    timestamps: {
+                        start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
+                        ...(endTimestamp !== "" && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
+                    },
+                    ...(settings.largeImage() ? { assets: {
+                        large_image: settings.largeImage(),
+                        large_text: settings.largeImageText(),
+                        small_image: settings.smallImage(),
+                        small_text: settings.smallImageText()
+                    }} : {}),
+                    buttons: [
+                        { label: settings.button1Text(), url: settings.button1URL()},
+                        { label: settings.button2Text(), url: settings.button2URL()}
+                    ].filter(x => !!x.label),
+                });
+                break;
+            case "lastfm":
+                this.logger.info("Streaming last.fm...");
 
-            return;
-        } 
-
-        if (this.settings.get("rpc_mode", "none") === "lastfm") {
-            this.logger.info("Streaming last.fm...");
-
-            await this.lfmClient.stream(async (track) => {
-                if (!track) {
-                    this.rpcClient.clearRPC();
-                    return;
-                }
-
-                if (this.settings.get("lastfm_use_youtube", false)
-                    && this.settings.get("lastfm_show_album_art", true) 
-                    && !track.albumArt
-                ) {
-                    const matching = await this.ytmClient.findYoutubeEquivalent(track);
-                    if (matching) {
-                        track = this.ytmClient.applyToTrack(matching, track);
-                    } else {
-                        this.logger.info(`${track.artist} - ${track.name} has no album art.`)
+                this.lfmClient.stream(async (track) => {
+                    if (!track) {
+                        this.rpcClient.clearRPC();
+                        return;
                     }
-                } else if (this.settings.get("lastfm_show_album_art", true) && !track.albumArt) {
-                    track.albumArt ??= this.settings.get("lastfm_default_album_art", 
-                        "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png");
-                }
 
-                track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
+                    const { youtubeFallback, showAlbumArt } = RichPresenceSettings.LastFm;
+                    if (youtubeFallback() && showAlbumArt() && !track.albumArt) {
+                        const matching = await this.ytmClient.findYoutubeEquivalent(track);
+                        if (matching) {
+                            track = this.ytmClient.applyToTrack(matching, track);
+                        } else {
+                            this.logger.info(`${track.artist} - ${track.name} has no album art.`)
+                        }
+                    }
 
-                const mapped = this.lfmClient.mapToRPC(track, this.settings);
-                if (!!mapped) this.rpcClient.sendRPC(mapped);
-                else this.rpcClient.clearRPC();
-            });
+                    track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
+
+                    const mapped = this.lfmClient.mapToRPC(track, this.settings);
+                    if (!!mapped) this.rpcClient.sendRPC(mapped);
+                    else this.rpcClient.clearRPC();
+                });
+                break;
+            case "none":
+                const err = "RPC mode is set to none while it's enabled";
+                this.logger.error(err);
+                throw new Error(err);
         }
     }
 
     public start() {
         RichPresence.classInstance = this;
-        setLogger(this.logger);
 
+        setLogger(this.logger);
         patchUI(this);
         this.rpcClient.patchTypeOverride(this.patcher);
 

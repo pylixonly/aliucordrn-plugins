@@ -1,7 +1,6 @@
 export interface Activity {
     name: string;
     type: ActivityTypes;
-    application_id: string;
     state?: string;
     details: string;
     timestamps?: {

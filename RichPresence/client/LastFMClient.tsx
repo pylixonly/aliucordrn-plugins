@@ -2,8 +2,8 @@ import { Logger } from "aliucord/utils/Logger";
 import { RPLogger } from "../utils/Logger";
 import { Activity, ActivityTypes } from "../types/Activity";
 import { Track } from "../types/Track";
-import { ifEmpty } from "../utils/ifEmpty";
 import RichPresence from "..";
+import { settings as RichPresenceSettings, defaults } from "../utils/Settings";
 
 export default class LastFMClient {
     apiKey: string;
@@ -13,16 +13,12 @@ export default class LastFMClient {
     updateInterval?: NodeJS.Timer;
 
     constructor(apiKey) {
-        if (!apiKey || apiKey === "") {
-            apiKey = RichPresence.classInstance.defaults.lastfm_apikey;
-        }
-            
-        this.apiKey = apiKey;
+        this.apiKey = apiKey ?? defaults.lastfm_apikey;
         this.logger = RPLogger;
     }
 
     setUsername(username: string) {
-        if (username === "") {
+        if (!username) {
             this.logger.error(`[instance: ${this.apiKey}] Username is empty`);
             throw new Error('Username is empty');
         }
@@ -110,7 +106,7 @@ export default class LastFMClient {
     mapToRPC(track : Track, settings): Activity | null {
         return track ? {
             name: 'Music',
-            type: settings.get("lastfm_listening_to", false) ? ActivityTypes.LISTENING : ActivityTypes.GAME,
+            type: RichPresenceSettings.LastFm.listeningTo() ? ActivityTypes.LISTENING : ActivityTypes.GAME,
             details: track.name,
             state: `by ${track.artist}`,
             ...(settings.get("lastfm_show_album_art", true) && track.album ? {
@@ -123,10 +119,9 @@ export default class LastFMClient {
                     } : {})
                 }
             } : {}),
-            ...(settings.get("lastfm_add_ytm_button", false) ?  { buttons: [
+            ...(RichPresenceSettings.LastFm.linkYtmSearch() ?  { buttons: [
                 { label: 'Listen on Youtube Music', url: track.ytUrl }
             ]} : {}),
-            application_id: ifEmpty(settings.get("rpc_AppID", ""), RichPresence.classInstance.defaults.discord_application_id)
         } : null
     }
 

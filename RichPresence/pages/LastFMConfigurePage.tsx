@@ -1,5 +1,5 @@
-import { getSettings } from "./patches";
 import { React, ReactNative, Forms } from "aliucord/metro";
+import { getSettings } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
 const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
@@ -45,16 +45,6 @@ const settings = getSettings();
                                 value = {settings.get("lastfm_use_youtube", false)}
                                 onValueChange={(v) => settings.set("lastfm_use_youtube", v)} 
                             />}
-                        />
-                    }
-                    { settings.get("lastfm_show_album_art", true) &&
-                        <FormInput
-                            title="Default album art"
-                            value={settings.get("lastfm_default_album_art", "")}
-                            placeholder="https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png"
-                            onChange={v => {
-                                settings.set("lastfm_default_album_art", v != ""? v : "https://www.last.fm/static/images/lastfm_avatar_twitter.52a5d69a85ac.png");
-                            }}
                         />
                     }
                     <FormRow

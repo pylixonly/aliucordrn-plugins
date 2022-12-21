@@ -17,7 +17,6 @@ export function startExampleRPC(rpcClient: RPCClient) {
         buttons: [
             { label: "random link #1", url: "https://music.youtube.com/watch?v=n-LCCiSErCo&feature=share"},
             { label: "random link #2", url: "https://discord.com/vanityurl/dotcom/steakpants/flour/flower/index11.html"}
-        ],
-        application_id: "463151177836658699"
+        ]
     });
 }

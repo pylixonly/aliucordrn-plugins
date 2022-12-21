@@ -3,6 +3,7 @@ import { RPLogger } from "../utils/Logger";
 import { Activity, ActivityTypes } from "../types/Activity";
 import RichPresence from "..";
 import { Patcher } from "aliucord/api";
+import { settings as RichPresenceSettings } from "../utils/Settings";
 
 const { SET_ACTIVITY } = getModule(x => !!x.SET_ACTIVITY);
 const { handler } = SET_ACTIVITY;
@@ -16,6 +17,8 @@ export default class RPCClient {
                 activity.type = this.lastActivityType;
                 this.lastActivityType = ActivityTypes.GAME;
             }
+
+            type === "LOCAL_ACTIVITY_UPDATE" && RPLogger.info("Dispatching RPC: ", activity);
         });
     }
 
@@ -25,13 +28,14 @@ export default class RPCClient {
                                             || activity[k].length === 0
                                             && delete activity[k]);
 
-        if (!!activity.assets) {
+        if (activity.assets) {
             Object.keys(activity.assets).forEach((k) => activity.assets![k] === undefined 
                                                         || activity.assets![k].length === 0
                                                         && delete activity.assets![k]);
         }
 
         this.lastActivityType = activity.type ?? ActivityTypes.GAME;
+        RPLogger.info("Sending RPC", activity);
         this.sendRequest(activity);
     }
 
@@ -41,7 +45,7 @@ export default class RPCClient {
             socket: {
                 id: 110,
                 application: {
-                    id: RichPresence.classInstance.defaults.discord_application_id,
+                    id: RichPresenceSettings.ApplicationId(),
                     name: activity?.name ?? "RichPresence"
                 },
                 transport: "ipc"
@@ -53,8 +57,12 @@ export default class RPCClient {
         });
     }
 
-    public clearRPC() {
+    public clearRPC(silent = false) {
         this.lastActivityType = ActivityTypes.GAME;
         this.sendRequest(undefined);
+
+        if (!silent) {
+            RPLogger.info("Cleared RPC");
+        }
     }
 }

@@ -1,7 +1,6 @@
 import { React, Forms } from "aliucord/metro";
 import { ScrollView } from "react-native";
-import { getSettings } from "./patches";
-
+import { getSettings } from "../utils/Settings";
 const { FormSection, FormInput, FormRow } = Forms;
 
 export default function RichPresenceSetupPage() {
