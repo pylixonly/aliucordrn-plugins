@@ -29,8 +29,12 @@ export const fromFile = {
 
     lastfm_username: getValueOf("lastfm_username"),
     lastfm_apikey: getValueOf("lastfm_apikey", defaults.lastfm_apikey),
-    lastfm_showAlbumArt: getValueOf("lastfm_show_album_art", true),
 
+    lastfm_showAlbumArt: getValueOf("lastfm_show_album_art", true),
+    lastfm_use_youtube: getValueOf("lastfm_use_youtube", false),
+    lastfm_listening_to: getValueOf("lastfm_listening_to", false),
+    lastfm_add_ytm_button: getValueOf("lastfm_add_ytm_button", false),
+    lastfm_add_loved_icon: getValueOf("lastfm_add_loved_icon", false),
 }
 
 export const settings = {
@@ -42,10 +46,11 @@ export const settings = {
         enabled: () => fromFile.rpc_mode() === "lastfm",
         username: fromFile.lastfm_username,
         apiKey: fromFile.lastfm_apikey,
-        showAlbumArt: getValueOf("lastfm_showAlbumArt", true),
-        youtubeFallback: getValueOf("lastfm_use_youtube", false),
-        listeningTo: getValueOf("lastfm_listening_to", false),
-        linkYtmSearch: getValueOf("lastfm_add_ytm_button", false),
+        showAlbumArt: fromFile.lastfm_showAlbumArt,
+        youtubeFallback: fromFile.lastfm_use_youtube,
+        listeningTo: fromFile.lastfm_listening_to,
+        linkYtmSearch: fromFile.lastfm_add_ytm_button,
+        addLovedIcon: fromFile.lastfm_add_loved_icon,
     },
 
     Custom: {

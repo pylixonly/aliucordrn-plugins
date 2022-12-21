@@ -1,5 +1,5 @@
 import { React, ReactNative, Forms } from "aliucord/metro";
-import { getSettings } from "../utils/Settings";
+import { defaults, getSettings } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
 const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
@@ -22,7 +22,7 @@ const settings = getSettings();
                     <FormInput
                         title="LastFM API Key [optional]"
                         value={settings.get("lastfm_apikey", "")}
-                        placeholder="615322f0047e12aedbc610d9d71f7430"
+                        placeholder={defaults.lastfm_apikey}
                         onChange={v => {
                             settings.set("lastfm_apikey", v);
                         }}
@@ -61,6 +61,14 @@ const settings = getSettings();
                         trailing={<FormSwitch
                             value={settings.get("lastfm_add_ytm_button", false)}
                             onValueChange={(v) => settings.set("lastfm_add_ytm_button", v)}
+                        />}
+                    />
+                    <FormRow
+                        label='Add "Loved" icon'
+                        subLabel="Add a heart icon to the rich presence if the song is loved."
+                        trailing={<FormSwitch
+                            value={settings.get("lastfm_add_loved_icon", false)}
+                            onValueChange={(v) => settings.set("lastfm_add_loved_icon", v)}
                         />}
                     />
                 </FormSection>

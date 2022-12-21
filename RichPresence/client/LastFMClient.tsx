@@ -74,23 +74,12 @@ export default class LastFMClient {
         }).toString();
 
         const response = await fetch(`http://ws.audioscrobbler.com/2.0/?${params}`).then(x => x.json());
-        
-        const trackDataParams = new URLSearchParams({
-            method: 'track.getInfo',
-            user: this.username,
-            api_key: this.apiKey,
-            format: 'json',
-            artist: response.recenttracks.track[0].artist.name,
-            track: response.recenttracks.track[0].name
-        }).toString();
 
-        // const trackData = await fetch(`http://ws.audioscrobbler.com/2.0/?${trackDataParams}`).then(x => x.json());
-        
         const [track] = response.recenttracks.track;
-        return this.mapTrack(track); //, trackData);
+        return this.mapTrack(track);
     }
 
-    mapTrack(track) {   // mapTrack(track, trackData) {
+    mapTrack(track) {
         return {
             name: track.name,
             artist: track.artist.name,
@@ -113,7 +102,7 @@ export default class LastFMClient {
                 assets: {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
-                    ...(track.loved && false ? { // todo
+                    ...(track.loved && RichPresenceSettings.LastFm.addLovedIcon() ? { // todo
                         small_image: 'loved',
                         small_text: 'Loved' 
                     } : {})

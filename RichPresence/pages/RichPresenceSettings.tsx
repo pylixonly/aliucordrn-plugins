@@ -1,7 +1,7 @@
 import { React, ReactNative, Styles, Forms } from "aliucord/metro"
 import { getAssetId } from "aliucord/utils"
 import RichPresence from "..";
-import { getSettings } from "../utils/Settings";
+import { getSettings, defaults } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
 
@@ -74,7 +74,7 @@ export default function RichPresenceSettings({ navigation }) {
                 <FormInput
                     title="Discord Application ID [optional]"
                     value={settings.get("rpc_AppID", "")}
-                    placeholder="463151177836658699"
+                    placeholder={defaults.discord_application_id}
                     onChange={v => {
                         settings.set("rpc_AppID", v);
                     }}
