@@ -36,13 +36,13 @@ export default function RichPresenceSettings({ navigation }) {
 
                             settings.set("rpc_enabled", v);
                             RichPresence.classInstance.init();
-                            Toasts.open({ content: "Rich Presence is now " + (v ? "enabled" : "disabled") + "."})
+                            Toasts.open({ content: "Rich Presence is now " + (v ? "enabled" : "disabled")})
                         }}
                     />}
                 />
                 { settings.get("rpc_enabled", false) &&
                     <FormRow
-                        label="Force update Rich Presence"
+                        label="Force update rich presence"
                         subLabel="Use this to apply changes to your rich presence settings."
                         trailing={FormRow.Arrow}
                         onPress={() => {
@@ -62,7 +62,7 @@ export default function RichPresenceSettings({ navigation }) {
                     onPress={() => settings.set("rpc_mode", "lastfm")}
                 />
                 <FormRow
-                    label="Custom set"
+                    label="Custom settings"
                     subLabel="Set the rich presence according to your own settings."
                     trailing={settings.get("rpc_mode", "none") === "custom" ? 
                         <FormRow.Icon source={checkIcon} /> : undefined
@@ -80,7 +80,7 @@ export default function RichPresenceSettings({ navigation }) {
                     }}
                 />
                 <FormRow
-                    label="Configure Custom Rich Presence"
+                    label="Configure custom rich presence"
                     subLabel="Show how cool you are to your friends by manually customizing your rich presence."
                     trailing={FormRow.Arrow}
                     onPress={() => navigation.push("RichPresenceSetupPage")}

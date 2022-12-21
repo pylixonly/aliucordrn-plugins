@@ -28,7 +28,7 @@ const settings = getSettings();
                         }}
                     />
                 </FormSection>
-                <FormSection title="Misc Configuration">
+                <FormSection title="Misc Configurations">
                     <FormRow
                         label="Show album art"
                         subLabel="Show album art in the rich presence."
