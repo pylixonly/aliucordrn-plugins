@@ -20,7 +20,7 @@ export default class RichPresence extends Plugin {
 
     defaults = {
         lastfm_apikey: "615322f0047e12aedbc610d9d71f7430",
-        discord_application_id: "463151177836658699",
+        discord_application_id: "1054951789318909972",
     }
 
     public async init() {
@@ -29,7 +29,7 @@ export default class RichPresence extends Plugin {
             this.settings.get("lastfm_apikey", this.defaults.lastfm_apikey)
         ).setUsername(this.settings.get("lastfm_username", ""));
 
-        await this.rpcClient.sendRPC();
+        this.rpcClient.clearRPC();
     
         if (this.settings.get("rpc_enabled", false) === false) {
             return;
@@ -43,7 +43,7 @@ export default class RichPresence extends Plugin {
             const startTimestamp = ifEmpty(this.settings.get("rpc_StartTimestamp", ""), "since_start");
             const endTimestamp = this.settings.get("rpc_EndTimestamp", "");
 
-            await this.rpcClient.sendRPC({
+            this.rpcClient.sendRPC({
                 name: ifEmpty(this.settings.get("rpc_AppName", ""), "Discord"),
                 type: ActivityTypes.GAME, // PLAYING
                 state: this.settings.get("rpc_State", ""),
@@ -73,7 +73,7 @@ export default class RichPresence extends Plugin {
 
             await this.lfmClient.stream(async (track) => {
                 if (!track) {
-                    await this.rpcClient.sendRPC();
+                    this.rpcClient.clearRPC();
                     return;
                 }
 
@@ -94,27 +94,11 @@ export default class RichPresence extends Plugin {
 
                 track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
 
-                await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings));
+                const mapped = this.lfmClient.mapToRPC(track, this.settings);
+                if (!!mapped) this.rpcClient.sendRPC(mapped);
+                else this.rpcClient.clearRPC();
             });
         }
-    }
-
-    patchListeningTo() {
-        this.patcher.before(FluxDispatcher, "dispatch", (_, event) => {
-            const listeningToEnabled = this.settings.get("lastfm_listening_to", false);
-            const lastfmEnabled = this.settings.get("rpc_mode", "none") === "lastfm";
-
-            if (listeningToEnabled && lastfmEnabled && event.type === "LOCAL_ACTIVITY_UPDATE" && event.type) {
-                const activity = event.activity;
-                if (activity && activity.type === ActivityTypes.GAME) {
-                    activity.type = ActivityTypes.LISTENING;
-                    event.activity = activity;
-                }
-            } 
-            if (event.type === "LOCAL_ACTIVITY_UPDATE") {
-                this.logger.info(event)
-            }
-        })
     }
 
     public start() {
@@ -122,7 +106,7 @@ export default class RichPresence extends Plugin {
         setLogger(this.logger);
 
         patchUI(this);
-        this.patchListeningTo()
+        this.rpcClient.patchTypeOverride(this.patcher);
 
         if (UserStore.getCurrentUser()) {
             this.init();
@@ -137,6 +121,6 @@ export default class RichPresence extends Plugin {
 
     public stop() {
         this.lfmClient.clear();
-        this.rpcClient.sendRPC();
+        this.rpcClient.clearRPC();
     }
 }

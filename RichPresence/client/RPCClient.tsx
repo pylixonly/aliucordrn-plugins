@@ -1,35 +1,48 @@
 import { FluxDispatcher, getByProps, getModule } from "aliucord/metro";
 import { RPLogger } from "../utils/Logger";
-import { Activity } from "../types/Activity";
+import { Activity, ActivityTypes } from "../types/Activity";
 import RichPresence from "..";
+import { Patcher } from "aliucord/api";
+
+const { SET_ACTIVITY } = getModule(x => !!x.SET_ACTIVITY);
+const { handler } = SET_ACTIVITY;
 
 export default class RPCClient {
-    lastRPC: any;
+    private lastActivityType: ActivityTypes = ActivityTypes.GAME;
 
-    constructor() {
-        this.lastRPC = null;
+    public patchTypeOverride(patcher: Patcher) {
+        patcher.before(FluxDispatcher, 'dispatch', (_, { type, activity }) => {
+            if (type === "LOCAL_ACTIVITY_UPDATE" && !!activity) {
+                activity.type = this.lastActivityType;
+                this.lastActivityType = ActivityTypes.GAME;
+            }
+        });
     }
 
-    public async sendRPC(activity?: Activity | null) {
-        if (activity?.assets?.large_text === "") activity.assets.large_text = undefined;
-        if (activity?.assets?.small_text === "") activity.assets.small_text = undefined;
+    public sendRPC(activity: Activity) {
+        // Remove empty properties/arrays
+        Object.keys(activity).forEach((k) => activity[k] === undefined 
+                                            || activity[k].length === 0
+                                            && delete activity[k]);
 
-        const { SET_ACTIVITY } = getModule(x => !!x.SET_ACTIVITY);
-        const { handler } = SET_ACTIVITY;
+        if (!!activity.assets) {
+            Object.keys(activity.assets).forEach((k) => activity.assets![k] === undefined 
+                                                        || activity.assets![k].length === 0
+                                                        && delete activity.assets![k]);
+        }
 
-        if (activity)
-            // Remove empty properties/arrays
-            Object.keys(activity).forEach((k) => activity[k] === undefined 
-                                                || activity[k].length === 0 
-                                                && delete activity[k]);
+        this.lastActivityType = activity.type ?? ActivityTypes.GAME;
+        this.sendRequest(activity);
+    }
 
-        await handler({
+    private sendRequest(activity?: Activity) {
+        handler({
             isSocketConnected: () => true,
             socket: {
                 id: 110,
                 application: {
                     id: RichPresence.classInstance.defaults.discord_application_id,
-                    name: activity?.name ?? "Discord"
+                    name: activity?.name ?? "RichPresence"
                 },
                 transport: "ipc"
             },
@@ -38,50 +51,10 @@ export default class RPCClient {
                 activity: activity ?? null
             }
         });
-
-        // if (activity.assets !== undefined) {
-        //     const [large_image, small_image] = await this.lookupAssets(
-        //         activity.application_id, 
-        //         [activity.assets.large_image!, activity.assets.small_image!]
-        //     );
-
-        //     activity.assets.large_image = large_image ? large_image : undefined;
-        //     activity.assets.small_image = small_image ? small_image : undefined;
-
-        //     if (activity.assets.large_text === "") activity.assets.large_text = undefined;
-        //     if (activity.assets.small_text === "") activity.assets.small_text = undefined;
-        // }
-
-        // let params: any = {
-        //     name: activity.name,
-        //     type: activity.type,
-        //     flags: 0,
-        //     state: activity.state,
-        //     details: activity.details,
-        //     timestamps: activity.timestamps,
-        //     assets: activity.assets,
-        //     metadata: activity.buttons ? {
-        //         button_urls: activity.buttons.map(x => x.url).filter(x => x !== "")
-        //     } : undefined,
-        //     buttons: activity.buttons?.map(x => x.label).filter(x => x !== ""),
-        //     application_id: activity.application_id
-        // }; 
-
-        // // remove undefined values
-        // Object.keys(params).forEach((k) => params[k] === undefined || params[k].length === 0 && delete params[k]);
-
-        // // send update to Discord
-        // // await this.updateRPC(params);
     }
 
-    // private async updateRPC(activity?: any) {
-    //     const wasNull = !activity && !this.lastRPC;
-    //     this.lastRPC = activity;
-    //     await FluxDispatcher.dispatch({
-    //         type: "LOCAL_ACTIVITY_UPDATE",
-    //         activity: activity
-    //     });
-
-    //     !wasNull && RPLogger.info(activity ? "Updated presence with params:" : "Stopped presence:", activity);
-    // }
+    public clearRPC() {
+        this.lastActivityType = ActivityTypes.GAME;
+        this.sendRequest(undefined);
+    }
 }
