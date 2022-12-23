@@ -21,7 +21,7 @@ export default class RPCClient {
         });
     }
 
-    public async sendRPC(activity: Activity) {
+    public async sendRPC(activity: Activity): Promise<any> {
         // Remove empty properties/arrays
         Object.keys(activity).forEach((k) => activity[k] === undefined 
                                             || activity[k].length === 0
@@ -34,10 +34,10 @@ export default class RPCClient {
         }
 
         this.lastActivityType = activity.type ?? ActivityTypes.GAME;
-        await this.sendRequest(activity);
+        return await this.sendRequest(activity);
     }
 
-    private async sendRequest(activity?: Activity) {
+    private async sendRequest(activity?: Activity): Promise<any> {
         return await handler({
             isSocketConnected: () => true,
             socket: {
@@ -60,8 +60,8 @@ export default class RPCClient {
         // }
     }
 
-    public async clearRPC() {
+    public async clearRPC(): Promise<any> {
         this.lastActivityType = ActivityTypes.GAME;
-        await this.sendRequest(undefined);
+        return await this.sendRequest(undefined);
     }
 }

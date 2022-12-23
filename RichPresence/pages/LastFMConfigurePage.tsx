@@ -71,6 +71,14 @@ const settings = getSettings();
                             onValueChange={(v) => settings.set("lastfm_add_loved_icon", v)}
                         />}
                     />
+                    <FormRow
+                        label='Show toasts on update'
+                        subLabel="Show a toast when the rich presence is updated."
+                        trailing={<FormSwitch
+                            value={settings.get("lastfm_show_toast", true)}
+                            onValueChange={(v) => settings.set("lastfm_show_toast", v)}
+                        />}
+                    />
                 </FormSection>
             </ScrollView>
     </>);

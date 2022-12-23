@@ -41,7 +41,7 @@ export default class RichPresence extends Plugin {
                 const startTimestamp = settings.startTimestamp();
                 const endTimestamp = settings.endTimestamp();
 
-                this.rpcClient.sendRPC({
+                const request = this.rpcClient.sendRPC({
                     name: settings.appName(),
                     type: ActivityTypes.GAME, // PLAYING
                     state: settings.state(),
@@ -61,6 +61,7 @@ export default class RichPresence extends Plugin {
                         { label: settings.button2Text(), url: settings.button2URL()}
                     ].filter(x => !!x.label),
                 });
+                this.logger.info("Started user-set RPC. SET_ACTIVITY: ", request);
                 break;
             case "lastfm":
                 this.logger.info("Streaming last.fm...");
@@ -71,7 +72,7 @@ export default class RichPresence extends Plugin {
                         return;
                     }
 
-                    const { youtubeFallback, showAlbumArt } = RichPresenceSettings.LastFm;
+                    const { youtubeFallback, showAlbumArt, showToast } = RichPresenceSettings.LastFm;
                     if (youtubeFallback() && showAlbumArt() && !track.albumArt) {
                         const matching = await this.ytmClient.findYoutubeEquivalent(track);
                         if (matching) {
@@ -83,12 +84,13 @@ export default class RichPresence extends Plugin {
 
                     track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
 
-                    await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings));
+                    const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings));
+                    this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
+                    showToast() && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
                 });
                 break;
             case "none":
                 const err = "RPC mode is set to none while it's enabled";
-                this.logger.error(err);
                 throw new Error(err);
         }
     }

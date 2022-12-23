@@ -35,6 +35,7 @@ export const fromFile = {
     lastfm_listening_to: getValueOf("lastfm_listening_to", false),
     lastfm_add_ytm_button: getValueOf("lastfm_add_ytm_button", false),
     lastfm_add_loved_icon: getValueOf("lastfm_add_loved_icon", false),
+    lastfm_show_toast: getValueOf("lastfm_show_toast", true),
 }
 
 export const settings = {
@@ -51,6 +52,7 @@ export const settings = {
         listeningTo: fromFile.lastfm_listening_to,
         linkYtmSearch: fromFile.lastfm_add_ytm_button,
         addLovedIcon: fromFile.lastfm_add_loved_icon,
+        showToast: fromFile.lastfm_show_toast,
     },
 
     Custom: {
