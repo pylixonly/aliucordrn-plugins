@@ -1,6 +1,7 @@
 import { React, ReactNative, Styles, Forms } from "aliucord/metro"
 import { getAssetId } from "aliucord/utils"
 import RichPresence from "..";
+import { RPLogger } from "../utils/Logger";
 import { getSettings, defaults } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
@@ -35,7 +36,12 @@ export default function RichPresenceSettings({ navigation }) {
                             }
 
                             settings.set("rpc_enabled", v);
-                            RichPresence.classInstance.init(true);
+                            RichPresence.classInstance.init().then(() => {
+                                Toasts.open({ content: `Rich presence ${v? "enabled" : "disabled"}.`})
+                            }).catch(e => {
+                                Toasts.open({ content: `Failed to ${v? "enable" : "disable"} rich presence.`, source: getAssetId("Small")})
+                                RPLogger.error(e)
+                            });
                         }}
                     />}
                 />
@@ -45,8 +51,12 @@ export default function RichPresenceSettings({ navigation }) {
                         subLabel="Use this to apply changes to your rich presence settings."
                         trailing={FormRow.Arrow}
                         onPress={() => {
-                            RichPresence.classInstance.init(true);
-                            Toasts.open({ content: "Rich presence updated."})
+                            RichPresence.classInstance.init().then(() => {
+                                Toasts.open({ content: "Rich presence updated."})
+                            }).catch(e => {
+                                Toasts.open({ content: "Failed to update rich presence.", source: getAssetId("Small")})
+                                RPLogger.error(e)
+                            });
                         }}
                     />
                 }

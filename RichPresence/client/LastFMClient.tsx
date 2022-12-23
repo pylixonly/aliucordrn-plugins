@@ -36,12 +36,11 @@ export default class LastFMClient {
 
         let lastCalled = getUnixSecond();
 
-        return setInterval(async () => {
+        return this.updateInterval = setInterval(async () => {
             const newTrack = await this.fetchCurrentScrobble();
 
             // stop RPC when the user hasn't scrobbled in 30 seconds
             if (!newTrack.nowPlaying && getUnixSecond() - lastCalled > 30) {
-                // clearInterval(this.updateInterval);
                 callback(null);
                 return;
             }

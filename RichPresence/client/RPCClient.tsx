@@ -21,7 +21,7 @@ export default class RPCClient {
         });
     }
 
-    public async sendRPC(activity: Activity, silent = false) {
+    public async sendRPC(activity: Activity) {
         // Remove empty properties/arrays
         Object.keys(activity).forEach((k) => activity[k] === undefined 
                                             || activity[k].length === 0
@@ -34,11 +34,11 @@ export default class RPCClient {
         }
 
         this.lastActivityType = activity.type ?? ActivityTypes.GAME;
-        await this.sendRequest(activity, silent);
+        await this.sendRequest(activity);
     }
 
-    private async sendRequest(activity?: Activity, silent = false) {
-        const result = await handler({
+    private async sendRequest(activity?: Activity) {
+        return await handler({
             isSocketConnected: () => true,
             socket: {
                 id: 110,
@@ -54,14 +54,14 @@ export default class RPCClient {
             }
         });
 
-        if (!silent) {
-            RPLogger.info(`RPC ${activity ? "updated" : "cleared"}`, result);
-            Toasts.open({ content: `Rich presence ${activity ? "updated" : "cleared"}`})
-        }
+        // if (!silent) {
+        //     RPLogger.info(`RPC ${activity ? "updated" : "cleared"}`, result);
+        //     Toasts.open({ content: `Rich presence ${activity ? "updated" : "cleared"}`})
+        // }
     }
 
-    public async clearRPC(silent = false) {
+    public async clearRPC() {
         this.lastActivityType = ActivityTypes.GAME;
-        await this.sendRequest(undefined, silent);
+        await this.sendRequest(undefined);
     }
 }

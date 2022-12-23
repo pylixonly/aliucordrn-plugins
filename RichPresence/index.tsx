@@ -18,14 +18,14 @@ export default class RichPresence extends Plugin {
     ytmClient = new YoutubeClient();
     lfmClient!: LastFMClient;
 
-    public async init(trigerred = false) {
+    public async init() {
         this.lfmClient?.clear();
         
         this.lfmClient = new LastFMClient(
             RichPresenceSettings.LastFm.apiKey(),
         ).setUsername(RichPresenceSettings.LastFm.username());
         
-        await this.rpcClient.clearRPC(true);
+        await this.rpcClient.clearRPC();
 
         if (!RichPresenceSettings.Enabled()) {
             return;
@@ -65,9 +65,9 @@ export default class RichPresence extends Plugin {
             case "lastfm":
                 this.logger.info("Streaming last.fm...");
 
-                this.lfmClient.stream(async (track) => {
+                await this.lfmClient.stream(async (track) => {
                     if (!track) {
-                        await this.rpcClient.clearRPC(/*silent*/ true);
+                        await this.rpcClient.clearRPC();
                         return;
                     }
 
@@ -83,7 +83,7 @@ export default class RichPresence extends Plugin {
 
                     track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
 
-                    await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings), trigerred);
+                    await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings));
                 });
                 break;
             case "none":
@@ -95,19 +95,20 @@ export default class RichPresence extends Plugin {
 
     public start() {
         RichPresence.classInstance = this;
+        const init = () => this.init().then(() => {
+            this.logger.info("RPC started!")
+        }).catch(e => {
+            this.logger.error(e)
+        });
 
         setLogger(this.logger);
         patchUI(this);
         this.rpcClient.patchTypeOverride(this.patcher);
 
         if (UserStore.getCurrentUser()) {
-            this.init();
+            init();
         } else {
-            this.patcher.before(FluxDispatcher, 'dispatch', (_, event) => {
-                if (event.type === "CONNECTION_OPEN") {
-                    this.init();
-                }
-            });
+            FluxDispatcher.subscribe("CONNECTION_OPEN", init);
         }
     }
 
