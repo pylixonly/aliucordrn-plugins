@@ -66,17 +66,27 @@ export default function RichPresenceSettings({ navigation }) {
                     label="Last.fm"
                     subLabel="Show what you're listening to through Last.fm."
                     trailing={settings.get("rpc_mode", "none") === "lastfm" ? 
-                        <FormRow.Icon source={checkIcon} /> : undefined
+                        <FormRow.Icon source={checkIcon} color="#5865F2" /> : undefined
                     }
-                    onPress={() => settings.set("rpc_mode", "lastfm")}
+                    onPress={() => { 
+                        settings.set("rpc_mode", "lastfm");
+                        RichPresence.classInstance.init().then(() => {
+                            Toasts.open({ content: "Rich presence updated to mode last.fm."})
+                        });
+                    }}
                 />
                 <FormRow
                     label="Custom settings"
                     subLabel="Set the rich presence according to your own settings."
                     trailing={settings.get("rpc_mode", "none") === "custom" ? 
-                        <FormRow.Icon source={checkIcon} /> : undefined
+                        <FormRow.Icon source={checkIcon} color="#5865F2" /> : undefined
                     }
-                    onPress={() => settings.set("rpc_mode", "custom")}
+                    onPress={() => { 
+                        settings.set("rpc_mode", "custom");
+                        RichPresence.classInstance.init().then(() => {
+                            Toasts.open({ content: "Rich presence updated to mode custom."})
+                        });
+                    }}
                 />
             </FormSection>
             <FormSection title="Configurations">
