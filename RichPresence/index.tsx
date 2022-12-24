@@ -16,7 +16,7 @@ export default class RichPresence extends Plugin {
     
     rpcClient = new RPCClient();
     ytmClient = new YoutubeClient();
-    lfmClient!: LastFMClient;
+    lfmClient?: LastFMClient;
 
     public async init() {
         this.lfmClient?.clear();
@@ -67,7 +67,7 @@ export default class RichPresence extends Plugin {
                 ).setUsername(RichPresenceSettings.lastFm.get("username"));
 
                 await this.lfmClient.stream(async (track) => {
-                    if (!track) {
+                    if (!track || !this.lfmClient) {
                         await this.rpcClient.clearRPC();
                         return;
                     }
@@ -115,7 +115,7 @@ export default class RichPresence extends Plugin {
     }
 
     public stop() {
-        this.lfmClient.clear();
+        this.lfmClient?.clear();
         this.rpcClient.clearRPC();
     }
 }
