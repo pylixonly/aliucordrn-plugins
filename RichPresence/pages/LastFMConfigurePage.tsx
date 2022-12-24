@@ -42,8 +42,8 @@ const { get, set } = getSettings("lastfm");
                             label="Use Youtube as a fallback for album art"
                             subLabel="If LastFM doesn't have an album art for the song, use Youtube as a fallback."
                             trailing={<FormSwitch 
-                                value = {get("use_youtube", false)}
-                                onValueChange={(v) => set("use_youtube", v)} 
+                                value = {get("youtube_fallback", false)}
+                                onValueChange={(v) => set("youtube_fallback", v)} 
                             />}
                         />
                     }

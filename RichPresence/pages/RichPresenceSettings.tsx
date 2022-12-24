@@ -30,7 +30,7 @@ export default function RichPresenceSettings({ navigation }) {
                                 return;
                             }
 
-                            if (v && get("mode", "lastfm") === "lastfm" && get("lastfm_username") === "") {
+                            if (v && get("mode", "none") === "lastfm" && !get("lastfm", {})["username"]) {
                                 Toasts.open({ content: "Please insert a Last.fm username or switch mode.", source: getAssetId("Small")})
                                 return;
                             }
@@ -67,10 +67,15 @@ export default function RichPresenceSettings({ navigation }) {
                     trailing={get("mode", "none") === "lastfm" ? 
                         <FormRow.Icon source={checkIcon} color="#5865F2" /> : undefined
                     }
-                    onPress={() => { 
+                    onPress={() => {
+                        const old = get("mode", "none");
                         set("mode", "lastfm");
                         RichPresence.classInstance.init().then(() => {
                             Toasts.open({ content: "Rich presence updated to mode last.fm."})
+                        }).catch(e => {
+                            set("mode", old);
+                            Toasts.open({ content: "Failed to update rich presence. \nEnsure the username is set.", source: getAssetId("Small")})
+                            RPLogger.error(e)
                         });
                     }}
                 />
@@ -84,6 +89,9 @@ export default function RichPresenceSettings({ navigation }) {
                         set("mode", "custom");
                         RichPresence.classInstance.init().then(() => {
                             Toasts.open({ content: "Rich presence updated to mode custom."})
+                        }).catch(e => {
+                            Toasts.open({ content: "Failed to update rich presence.", source: getAssetId("Small")})
+                            RPLogger.error(e)
                         });
                     }}
                 />

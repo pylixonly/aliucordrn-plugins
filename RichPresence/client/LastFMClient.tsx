@@ -91,23 +91,23 @@ export default class LastFMClient {
         }
     }
 
-    mapToRPC(track : Track, settings): Activity {
+    mapToRPC(track : Track): Activity {
         return {
             name: 'Music',
-            type: RichPresenceSettings.LastFm.listeningTo() ? ActivityTypes.LISTENING : ActivityTypes.GAME,
+            type: RichPresenceSettings.lastFm.get("listening_to") ? ActivityTypes.LISTENING : ActivityTypes.GAME,
             details: track.name,
             state: `by ${track.artist}`,
-            ...(settings.get("lastfm_show_album_art", true) && track.album ? {
+            ...(RichPresenceSettings.lastFm.get("show_album_art") && track.album ? {
                 assets: {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
-                    ...(track.loved && RichPresenceSettings.LastFm.addLovedIcon() ? { // todo
+                    ...(track.loved && RichPresenceSettings.lastFm.get("add_loved_icon") ? { // todo
                         small_image: 'loved',
                         small_text: 'Loved' 
                     } : {})
                 }
             } : {}),
-            ...(RichPresenceSettings.LastFm.linkYtmSearch() ?  { buttons: [
+            ...(RichPresenceSettings.lastFm.get("add_ytm_button") ?  { buttons: [
                 { label: 'Listen on Youtube Music', url: track.ytUrl }
             ]} : {}),
         }

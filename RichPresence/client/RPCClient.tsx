@@ -22,6 +22,7 @@ export default class RPCClient {
     }
 
     public async sendRPC(activity: Activity): Promise<any> {
+        RPLogger.info("Sending RPC: ", activity);
         // Remove empty properties/arrays
         Object.keys(activity).forEach((k) => activity[k] === undefined 
                                             || activity[k].length === 0
@@ -43,7 +44,7 @@ export default class RPCClient {
             socket: {
                 id: 110,
                 application: {
-                    id: RichPresenceSettings.ApplicationId(),
+                    id: RichPresenceSettings.applicationId,
                     name: activity?.name ?? "RichPresence"
                 },
                 transport: "ipc"

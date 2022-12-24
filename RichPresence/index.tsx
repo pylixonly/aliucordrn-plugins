@@ -21,44 +21,40 @@ export default class RichPresence extends Plugin {
     public async init() {
         this.lfmClient?.clear();
         
-        this.lfmClient = new LastFMClient(
-            RichPresenceSettings.LastFm.apiKey(),
-        ).setUsername(RichPresenceSettings.LastFm.username());
-        
         await this.rpcClient.clearRPC();
 
-        if (!RichPresenceSettings.Enabled()) {
+        if (!RichPresenceSettings.enabled) {
             return;
         }
 
         this.logger.info("Starting RPC...");
 
-        switch (RichPresenceSettings.Mode()) {
+        switch (RichPresenceSettings.mode) {
             case "custom":
-                const settings = RichPresenceSettings.Custom;
+                const settings = RichPresenceSettings.custom;
                 this.logger.info("Starting user-set RPC...");
 
-                const startTimestamp = settings.startTimestamp();
-                const endTimestamp = settings.endTimestamp();
+                const startTimestamp = settings.get("start_timestamp");
+                const endTimestamp = settings.get("end_timestamp");
 
-                const request = this.rpcClient.sendRPC({
-                    name: settings.appName(),
+                const request = await this.rpcClient.sendRPC({
+                    name: settings.get("app_name"),
                     type: ActivityTypes.GAME, // PLAYING
-                    state: settings.state(),
-                    details: settings.details(),
+                    state: settings.get("state"),
+                    details: settings.get("details"),
                     timestamps: {
                         start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
                         ...(endTimestamp !== "" && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
                     },
-                    ...(settings.largeImage() && settings.smallImage() ? { assets: {
-                        large_image: settings.largeImage(),
-                        large_text: settings.largeImageText(),
-                        small_image: settings.smallImage(),
-                        small_text: settings.smallImageText()
+                    ...(settings.get("large_image") || settings.get("small_image") ? { assets: {
+                        large_image: settings.get("large_image"),
+                        large_text: settings.get("large_image_text"),
+                        small_image: settings.get("small_image"),
+                        small_text: settings.get("small_image_text")
                     }} : {}),
                     buttons: [
-                        { label: settings.button1Text(), url: settings.button1URL()},
-                        { label: settings.button2Text(), url: settings.button2URL()}
+                        { label: settings.get("button1_text"), url: settings.get("button1_URL")},
+                        { label: settings.get("button2_text"), url: settings.get("button2_URL")}
                     ].filter(x => !!x.label),
                 });
                 this.logger.info("Started user-set RPC. SET_ACTIVITY: ", request);
@@ -66,14 +62,18 @@ export default class RichPresence extends Plugin {
             case "lastfm":
                 this.logger.info("Streaming last.fm...");
 
+                this.lfmClient = new LastFMClient(
+                    RichPresenceSettings.lastFm.get("apiKey"),
+                ).setUsername(RichPresenceSettings.lastFm.get("username"));
+
                 await this.lfmClient.stream(async (track) => {
                     if (!track) {
                         await this.rpcClient.clearRPC();
                         return;
                     }
 
-                    const { youtubeFallback, showAlbumArt, showToast } = RichPresenceSettings.LastFm;
-                    if (youtubeFallback() && showAlbumArt() && !track.albumArt) {
+                    const { get } = RichPresenceSettings.lastFm;
+                    if (get("youtube_fallback") && get("show_album_art") && !track.albumArt) {
                         const matching = await this.ytmClient.findYoutubeEquivalent(track);
                         if (matching) {
                             track = this.ytmClient.applyToTrack(matching, track);
@@ -84,9 +84,9 @@ export default class RichPresence extends Plugin {
 
                     track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
 
-                    const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track, this.settings));
+                    const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
                     this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
-                    showToast() && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
+                    get("showToast") && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
                 });
                 break;
             case "none":

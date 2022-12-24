@@ -8,80 +8,23 @@ export const defaults = {
     discord_application_id: "1054951789318909972",
 };
 
-export const fromFile = {
-    rpc_enabled: getValueOf("rpc_enabled", false),
-    rpc_mode: getValueOf("rpc_mode", "none"),
-    rpc_AppName: getValueOf("rpc_AppName", "Discord"),
-    rpc_AppID: getValueOf("rpc_AppID", defaults.discord_application_id),
-
-    rpc_State: getValueOf("rpc_State"),
-    rpc_Details: getValueOf("rpc_Details"),
-    rpc_EnableTimestamps: getValueOf("rpc_EnableTimestamps", false),
-    rpc_StartTimestamp: getValueOf("rpc_StartTimestamp", "since_start"),
-    rpc_EndTimestamp: getValueOf("rpc_EndTimestamp"),
-    rpc_LargeImage: getValueOf("rpc_LargeImage"),
-    rpc_LargeImageText: getValueOf("rpc_LargeImageText"),
-    rpc_SmallImage: getValueOf("rpc_SmallImage"),
-    rpc_SmallImageText: getValueOf("rpc_SmallImageText"),
-    rpc_Button1Text: getValueOf("rpc_Button1Text"),
-    rpc_Button1URL: getValueOf("rpc_Button1URL"),
-    rpc_Button2Text: getValueOf("rpc_Button2Text"),
-    rpc_Button2URL: getValueOf("rpc_Button2URL"),
-
-    lastfm_username: getValueOf("lastfm_username"),
-    lastfm_apikey: getValueOf("lastfm_apikey", defaults.lastfm_apikey),
-
-    lastfm_showAlbumArt: getValueOf("lastfm_show_album_art", true),
-    lastfm_use_youtube: getValueOf("lastfm_use_youtube", false),
-    lastfm_listening_to: getValueOf("lastfm_listening_to", false),
-    lastfm_add_ytm_button: getValueOf("lastfm_add_ytm_button", false),
-    lastfm_add_loved_icon: getValueOf("lastfm_add_loved_icon", false),
-    lastfm_show_toast: getValueOf("lastfm_show_toast", true),
-}
-
 export const settings = {
-    Enabled: fromFile.rpc_enabled,
-    Mode: fromFile.rpc_mode,
-    ApplicationId: fromFile.rpc_AppID,
+    get enabled() { return settingsInstance().get("enabled", false) },
+    get mode() { return settingsInstance().get("mode", "none") },
+    get applicationId() { return settingsInstance().get("appID", defaults.discord_application_id) },
 
-    LastFm: {
-        enabled: () => fromFile.rpc_mode() === "lastfm",
-        username: fromFile.lastfm_username,
-        apiKey: fromFile.lastfm_apikey,
-        showAlbumArt: fromFile.lastfm_showAlbumArt,
-        youtubeFallback: fromFile.lastfm_use_youtube,
-        listeningTo: fromFile.lastfm_listening_to,
-        linkYtmSearch: fromFile.lastfm_add_ytm_button,
-        addLovedIcon: fromFile.lastfm_add_loved_icon,
-        showToast: fromFile.lastfm_show_toast,
+    lastFm: {
+        get enabled() { return settingsInstance().get("mode", "none") === "lastfm" },
+        get(name) {
+            return settingsInstance().get("lastfm", {})[name];
+        }
     },
 
-    Custom: {
-        enabled: () => fromFile.rpc_mode() === "custom",
-        appName: fromFile.rpc_AppName,
-        state: fromFile.rpc_State,
-        details: fromFile.rpc_Details,
-        startTimestamp: fromFile.rpc_StartTimestamp,
-        endTimestamp: fromFile.rpc_EndTimestamp,
-        largeImage: fromFile.rpc_LargeImage,
-        largeImageText: fromFile.rpc_LargeImageText,
-        smallImage: fromFile.rpc_SmallImage,
-        smallImageText: fromFile.rpc_SmallImageText,
-        button1Text: fromFile.rpc_Button1Text,
-        button1URL: fromFile.rpc_Button1URL,
-        button2Text: fromFile.rpc_Button2Text,
-        button2URL: fromFile.rpc_Button2URL,
-    }
-}
-
-function getValueOf(key: string, defaultValue?: any) {
-    return () => {
-        const val = settingsInstance().get<string, any>(key, undefined);
-        if (val === undefined || val.length === 0) {
-            return defaultValue;
+    custom: {
+        get enabled() { return settingsInstance().get("mode", "none") === "lastfm" },
+        get(name: string) {
+            return settingsInstance().get("customRpc", {})[name];
         }
-        
-        return val;
     }
 }
 
