@@ -1,128 +1,124 @@
-import { React, Forms } from "aliucord/metro";
+import { React, ReactNative, Forms, Styles } from "aliucord/metro";
 import { ScrollView } from "react-native";
 import { getSettings } from "../utils/Settings";
-const { FormSection, FormInput, FormRow } = Forms;
+
+const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
+const { Text } = ReactNative;
 
 export default function RichPresenceSetupPage() {
-    const settings = getSettings();
-
+    const { get, set } = getSettings("customRpc");
+    
     return (<>
         {/*// @ts-ignore */}
         <ScrollView>
-            <FormSection title="Rich Presence Setup">
+            <FormSection title="Basic">
                 <FormInput
                     title="Application Name"
-                    value={settings.get("rpc_AppName", "Discord")}
+                    value={get("app_name")}
                     placeholder="Discord"
-                    onChange={v => {
-                        settings.set("rpc_AppName", v);
-                    }}
+                    onChange={v => set("app_name", v)}
                 />
                 <FormInput
                     title="Details"
-                    value={settings.get("rpc_Details", "")}
+                    value={get("details")}
                     placeholder="Insert Details"
-                    onChange={v => {
-                        settings.set("rpc_Details", v);
-                    }}
+                    onChange={v => set("details", v)}
                 />
                 <FormInput
                     title="State"
-                    value={settings.get("rpc_State", "")}
+                    value={get("state")}
                     placeholder="Insert State"
-                    onChange={v => {
-                        settings.set("rpc_State", v);
-                    }}
+                    onChange={v => set("state", v)}
                 />
+            </FormSection>
+            <FormSection title="Images">
                 <FormInput
                     title="Large Image"
-                    value={settings.get("rpc_LargeImage", "")}
+                    value={get("large_image")}
                     placeholder="Insert Large Image"
-                    onChange={v => {
-                        settings.set("rpc_LargeImage", v);
-                    }}
+                    onChange={v => set("large_image", v)}
                 />
-                { !!settings.get("rpc_LargeImage", false) && <FormInput
+                <FormInput
                     title="Large Image Text"
-                    value={settings.get("rpc_LargeImageText", "")}
+                    value={get("large_image_text")}
                     placeholder="Insert Large Image Text"
-                    onChange={v => {
-                        settings.set("rpc_LargeImageText", v);
-                    }}
-                /> }
+                    disabled={!get("large_image", false)}
+                    onChange={v => set("large_image_text", v)}
+                />
                 <FormInput
                     title="Small Image"
-                    value={settings.get("rpc_SmallImage", "")}
+                    value={get("small_image")}
                     placeholder="Insert Small Image"
-                    onChange={v => {
-                        settings.set("rpc_SmallImage", v);
-                    }}
+                    onChange={v => set("small_image", v)}
                 />
-                { !!settings.get("rpc_SmallImage", false) && <FormInput
+                <FormInput
                     title="Small Image Text"
-                    value={settings.get("rpc_SmallImageText", "")}
+                    value={get("small_image_text")}
                     placeholder="Insert Small Image Text"
-                    onChange={v => {
-                        settings.set("rpc_SmallImageText", v);
-                    }}
-                /> }
+                    disabled={!get("small_image", false)}
+                    onChange={v => set("small_image_text", v)}
+                />
+            </FormSection>
+            <FormSection title="Timestamps">
+                <FormRow
+                    label="Enable timestamps"
+                    subLabel="Set whether to show timestamps or not"
+                    trailing={<FormSwitch 
+                        value={get("enable_timestamps")} 
+                        onValueChange={v => set("enable_timestamps", v)} 
+                    />}
+                />
                 <FormInput
                     title="Start Timestamp"
-                    value={settings.get("rpc_StartTimestamp", "")}
+                    disabled={!get("enable_timestamps", false)}
+                    value={get("start_timestamp")}
                     placeholder="since_start"
-                    onChange={v => {
-                        settings.set("rpc_StartTimestamp", v);
-                    }}
+                    onChange={v => set("start_timestamp", v)}
                 />
                 <FormRow
                     label="Use current time as start timestamp" 
+                    subLabel="This will override the start timestamp you set above"
+                    disabled={!get("enable_timestamps", false)}
                     onPress={() => {
-                        settings.set("rpc_StartTimestamp", String(Date.now() / 1000 | 0));
+                        set("start_timestamp", String(Date.now() / 1000 | 0));
                     }}
                     trailing={FormRow.Arrow}
                 />
                 <FormInput
                     title="End Timestamp"
-                    value={settings.get("rpc_EndTimestamp", "")}
+                    value={get("end_timestamp")}
+                    disabled={!get("enable_timestamps", false)}
                     placeholder="Insert End Timestamp"
-                    onChange={v => {
-                        settings.set("rpc_EndTimestamp", v);
-                    }}
+                    onChange={v => set("end_timestamp", v)}
                 />
+            </FormSection>
+            <FormSection title="Buttons">
                 <FormInput
                     title="First Button Text"
-                    value={settings.get("rpc_Button1Text", "")}
+                    value={get("button1_text")}
                     placeholder="Insert First Button Text"
-                    onChange={v => {
-                        settings.set("rpc_Button1Text", v);
-                    }}
+                    onChange={v => set("button1_text", v)}
                 />
-                { settings.get("rpc_Button1Text", "") != "" && 
                 <FormInput
                     title="First Button URL"
-                    value={settings.get("rpc_Button1URL", "")}
+                    value={get("button1_URL")}
                     placeholder="Insert First Button URL"
-                    onChange={v => {
-                        settings.set("rpc_Button1URL", v);
-                    }}
-                />}
+                    disabled={!get("button1_text", false)}
+                    onChange={v => set("button1_URL", v)}
+                />
                 <FormInput
                     title="Second Button Text"
-                    value={settings.get("rpc_Button2Text", "")}
+                    value={get("button2_text")}
                     placeholder="Insert Second Button Text"
-                    onChange={v => {
-                        settings.set("rpc_Button2Text", v);
-                    }}
+                    onChange={v => set("button2_text", v)}
                 />
-                { settings.get("rpc_Button2Text", "") != "" &&
                 <FormInput                    
                     title="Second Button URL"
-                    value={settings.get("rpc_Button2URL", "")}
+                    value={get("button2_URL")}
                     placeholder="Insert Second Button URL"
-                    onChange={v => {
-                        settings.set("rpc_Button2URL", v);
-                    }}
-                />}
+                    disabled={!get("button2_text", false)}
+                    onChange={v => set("button2_URL", v)}
+                />
             </FormSection>
         </ScrollView>
     </>);

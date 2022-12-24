@@ -47,7 +47,7 @@ export const patchUI = (plugin) => {
                     leading={<FormRow.Icon source={getAssetId("ic_link")}/>}
                     label="Rich Presence"
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.navigate("RichPresenceSettings", { navigation, L: "L" })}
+                    onPress={() => navigation.navigate("RichPresenceSettings", { navigation })}
                 />
             </>)
         });

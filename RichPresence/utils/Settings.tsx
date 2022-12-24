@@ -16,6 +16,7 @@ export const fromFile = {
 
     rpc_State: getValueOf("rpc_State"),
     rpc_Details: getValueOf("rpc_Details"),
+    rpc_EnableTimestamps: getValueOf("rpc_EnableTimestamps", false),
     rpc_StartTimestamp: getValueOf("rpc_StartTimestamp", "since_start"),
     rpc_EndTimestamp: getValueOf("rpc_EndTimestamp"),
     rpc_LargeImage: getValueOf("rpc_LargeImage"),
@@ -84,15 +85,24 @@ function getValueOf(key: string, defaultValue?: any) {
     }
 }
 
-export const getSettings = () => {
+export const getSettings = (name?: string) => {
     const [, forceUpdate] = React.useReducer(x => x + 1, 0);
     return {
-        get(key, defaultValue) {
+        get(key, defaultValue?) {
+            if (name) {
+                return settingsInstance().get(name, {})[key] ?? defaultValue;
+            }
             return settingsInstance().get(key, defaultValue);
         },
         set(key, value) {
-            settingsInstance().set(key, value);
-            forceUpdate(); 
+            if (name) {
+                const obj = settingsInstance().get(name, {});
+                obj[key] = value.length === 0 ? undefined : value;
+                settingsInstance().set(name, obj);
+            } else {
+                settingsInstance().set(key, value);
+            }
+            forceUpdate();
         }
     };
 }
