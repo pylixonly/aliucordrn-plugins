@@ -45,10 +45,10 @@ export default class RichPresence extends Plugin {
                     type: ActivityTypes.GAME, // PLAYING
                     state: settings.get("state"),
                     details: settings.get("details"),
-                    timestamps: {
+                    ...(settings.get("enable_timestamps") ? { timestamps: {
                         start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
                         ...(!!endTimestamp && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
-                    },
+                    }} : {}),
                     ...(largeImage || smallImage ? { assets: {
                         large_image: largeImage,
                         large_text: !!largeImage ? settings.get("large_image_text") : undefined,
@@ -76,7 +76,7 @@ export default class RichPresence extends Plugin {
                     }
 
                     const { get } = RichPresenceSettings.lastFm;
-                    if (get("youtube_fallback") && get("show_album_art") && !track.albumArt) {
+                    if (get("youtube_fallback") && (get("show_album_art") ?? true) && !track.albumArt) {
                         const matching = await this.ytmClient.findYoutubeEquivalent(track);
                         if (matching) {
                             track = this.ytmClient.applyToTrack(matching, track);
@@ -89,7 +89,7 @@ export default class RichPresence extends Plugin {
 
                     const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
                     this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
-                    get("show_toast") && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
+                    (get("show_toast") ?? true) && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
                 });
                 break;
             case "none":
