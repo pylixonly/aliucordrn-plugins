@@ -22,8 +22,8 @@ export const settings = {
 
     custom: {
         get enabled() { return settingsInstance().get("mode", "none") === "lastfm" },
-        get(name: string) {
-            return settingsInstance().get("customRpc", {})[name];
+        get(name: string, defaultValue?: any) {
+            return settingsInstance().get("customRpc", {})[name] || defaultValue;
         }
     }
 }

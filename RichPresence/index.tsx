@@ -34,23 +34,26 @@ export default class RichPresence extends Plugin {
                 const settings = RichPresenceSettings.custom;
                 this.logger.info("Starting user-set RPC...");
 
-                const startTimestamp = settings.get("start_timestamp");
+                const largeImage = settings.get("large_image");
+                const smallImage = settings.get("small_image");
+
+                const startTimestamp = settings.get("start_timestamp", "since_start");
                 const endTimestamp = settings.get("end_timestamp");
 
                 const request = await this.rpcClient.sendRPC({
-                    name: settings.get("app_name"),
+                    name: settings.get("app_name", "Discord"),
                     type: ActivityTypes.GAME, // PLAYING
                     state: settings.get("state"),
                     details: settings.get("details"),
                     timestamps: {
                         start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
-                        ...(endTimestamp !== "" && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
+                        ...(!!endTimestamp && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
                     },
-                    ...(settings.get("large_image") || settings.get("small_image") ? { assets: {
-                        large_image: settings.get("large_image"),
-                        large_text: settings.get("large_image_text"),
+                    ...(largeImage || smallImage ? { assets: {
+                        large_image: largeImage,
+                        large_text: !!largeImage ? settings.get("large_image_text") : undefined,
                         small_image: settings.get("small_image"),
-                        small_text: settings.get("small_image_text")
+                        small_text: !!largeImage ? settings.get("small_image_text") : undefined
                     }} : {}),
                     buttons: [
                         { label: settings.get("button1_text"), url: settings.get("button1_URL")},
