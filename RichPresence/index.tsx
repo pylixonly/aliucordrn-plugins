@@ -86,7 +86,7 @@ export default class RichPresence extends Plugin {
 
                     const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
                     this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
-                    get("showToast") && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
+                    get("show_toast") && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
                 });
                 break;
             case "none":

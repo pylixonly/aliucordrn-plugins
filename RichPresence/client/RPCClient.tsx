@@ -22,7 +22,6 @@ export default class RPCClient {
     }
 
     public async sendRPC(activity: Activity): Promise<any> {
-        RPLogger.info("Sending RPC: ", activity);
         // Remove empty properties/arrays
         Object.keys(activity).forEach((k) => activity[k] === undefined 
                                             || activity[k].length === 0
