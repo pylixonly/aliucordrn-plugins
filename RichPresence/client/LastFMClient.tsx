@@ -97,7 +97,7 @@ export default class LastFMClient {
             type: RichPresenceSettings.lastFm.get("listening_to") ? ActivityTypes.LISTENING : ActivityTypes.GAME,
             details: track.name,
             state: `by ${track.artist}`,
-            ...(RichPresenceSettings.lastFm.get("show_album_art") && track.album ? {
+            ...((RichPresenceSettings.lastFm.get("show_album_art") ?? true) && track.album ? {
                 assets: {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
