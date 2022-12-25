@@ -6,6 +6,9 @@ Allows you to set your Discord Rich Presence based on your last.fm or your custo
 ### [NoIdle](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/NoIdle.zip)
 Hides the fact that you are idling (Discord running in background)
 
+### [HideGiftButton](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/HideGiftButton.zip)
+Hides the gift button next to chat input
+
 <details>
 <summary>Building plugins</summary>
 
