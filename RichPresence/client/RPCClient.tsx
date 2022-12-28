@@ -10,7 +10,7 @@ export default class RPCClient {
     private lastActivityType: ActivityTypes = ActivityTypes.GAME;
 
     private replaceHostname(url: string) { 
-        return url.replace(/^(https?:\/\/)?([^\/]+\.)?discordapp\.(com|net)\/(.*)$/i, '$4');
+        return url.replace(/^(mp:)?(https?:\/\/)?([^\/]+\.)?discordapp\.(com|net)\/(.*)$/i, 'mp:$5');
     }
 
     public patchFilter(patcher: Patcher) {
@@ -19,13 +19,15 @@ export default class RPCClient {
                 activity.type = this.lastActivityType;
                 this.lastActivityType = ActivityTypes.GAME;
 
+                console.log(activity);
                 if (activity.assets) {
                     // Direct link to Discord's CDN are not accepted for some reason
-                    if (activity.assets.large_image && !activity.assets.large_image.startsWith("mp:"))
+                    if (activity.assets.large_image)
                         activity.assets.large_image = this.replaceHostname(activity.assets.large_image);
-                    if (activity.assets.small_image && !activity.assets.small_image.startsWith("mp:"))
+                    if (activity.assets.small_image)
                         activity.assets.small_image = this.replaceHostname(activity.assets.small_image);
                 }
+                console.log("POST:", activity)
             }
         });
     }
