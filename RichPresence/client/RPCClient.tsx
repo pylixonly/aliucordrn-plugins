@@ -19,7 +19,6 @@ export default class RPCClient {
                 activity.type = this.lastActivityType;
                 this.lastActivityType = ActivityTypes.GAME;
 
-                console.log(activity);
                 if (activity.assets) {
                     // Direct link to Discord's CDN are not accepted for some reason
                     if (activity.assets.large_image)
@@ -27,7 +26,6 @@ export default class RPCClient {
                     if (activity.assets.small_image)
                         activity.assets.small_image = this.replaceHostname(activity.assets.small_image);
                 }
-                console.log("POST:", activity)
             }
         });
     }
