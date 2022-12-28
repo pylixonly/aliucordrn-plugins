@@ -9,11 +9,23 @@ const { handler } = SET_ACTIVITY;
 export default class RPCClient {
     private lastActivityType: ActivityTypes = ActivityTypes.GAME;
 
-    public patchTypeOverride(patcher: Patcher) {
-        patcher.before(FluxDispatcher, 'dispatch', (_, { type, activity }) => {
+    private replaceHostname(url: string) { 
+        return url.replace(/^(https?:\/\/)?([^\/]+\.)?discordapp\.(com|net)\/(.*)$/i, '$4');
+    }
+
+    public patchFilter(patcher: Patcher) {
+        patcher.before(FluxDispatcher, 'dispatch', (_, { type, activity }: { type: string, activity: Activity }) => {
             if (type === "LOCAL_ACTIVITY_UPDATE" && !!activity) {
                 activity.type = this.lastActivityType;
                 this.lastActivityType = ActivityTypes.GAME;
+
+                if (activity.assets) {
+                    // Direct link to Discord's CDN are not accepted for some reason
+                    if (activity.assets.large_image && !activity.assets.large_image.startsWith("mp:"))
+                        activity.assets.large_image = this.replaceHostname(activity.assets.large_image);
+                    if (activity.assets.small_image && !activity.assets.small_image.startsWith("mp:"))
+                        activity.assets.small_image = this.replaceHostname(activity.assets.small_image);
+                }
             }
         });
     }

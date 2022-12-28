@@ -106,7 +106,7 @@ export default class RichPresence extends Plugin {
 
         setLogger(this.logger);
         patchUI(this);
-        this.rpcClient.patchTypeOverride(this.patcher);
+        this.rpcClient.patchFilter(this.patcher);
 
         if (UserStore.getCurrentUser()) {
             init();
