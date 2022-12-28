@@ -1,9 +1,8 @@
 import { Logger } from "aliucord/utils/Logger";
-import { RPLogger } from "../utils/Logger";
 import { Activity, ActivityTypes } from "../types/Activity";
 import { Track } from "../types/Track";
-import RichPresence from "..";
-import { settings as RichPresenceSettings, defaults } from "../utils/Settings";
+import { RPLogger } from "../utils/Logger";
+import { defaults, settings as RichPresenceSettings } from "../utils/Settings";
 
 export default class LastFMClient {
     apiKey: string;
@@ -101,7 +100,7 @@ export default class LastFMClient {
                 assets: {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
-                    ...(track.loved && RichPresenceSettings.lastFm.get("add_loved_icon") ? { // todo
+                    ...(track.loved && RichPresenceSettings.lastFm.get("add_loved_icon") ? {
                         small_image: 'loved',
                         small_text: 'Loved' 
                     } : {})

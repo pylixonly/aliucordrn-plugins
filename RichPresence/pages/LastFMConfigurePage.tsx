@@ -1,4 +1,4 @@
-import { React, ReactNative, Forms } from "aliucord/metro";
+import { Forms, React, ReactNative } from "aliucord/metro";
 import { defaults, getSettings } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;

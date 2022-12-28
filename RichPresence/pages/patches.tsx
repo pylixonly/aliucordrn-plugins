@@ -1,10 +1,8 @@
-import { React, Forms, getByProps } from "aliucord/metro";
+import { Forms, React } from "aliucord/metro";
 import { findInReactTree, getAssetId } from "aliucord/utils";
-import RichPresence from "..";
-import { RPLogger } from "../utils/Logger";
-import RichPresenceSetupPage from "./RichPresenceSetupPage";
 import LastFMConfigurePage from "./LastFMConfigurePage";
 import RichPresenceSettings from "./RichPresenceSettings";
+import RichPresenceSetupPage from "./RichPresenceSetupPage";
 
 export const patchUI = (plugin) => {
     const { getByName } = (window as any).aliucord.metro;

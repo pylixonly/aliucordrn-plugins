@@ -1,22 +1,20 @@
-import { React, ReactNative, Styles, Forms } from "aliucord/metro"
-import { getAssetId } from "aliucord/utils"
+import { Forms, React, ReactNative } from "aliucord/metro";
+import { getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
-import { getSettings, defaults } from "../utils/Settings";
+import { defaults, getSettings } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
 
 const { FormRow, FormSection, FormSwitch, FormInput, FormDivider } = Forms;
 const Toasts = (window as any).aliucord.metro.Toasts;
 
-// TODO: option for lfm
 export default function RichPresenceSettings({ navigation }) {
     const { get, set } = getSettings();
     const checkIcon = getAssetId("checked");
 
     return (<>
-    {/*
-        // @ts-ignore */}
+        {/*// @ts-ignore */}
         <ScrollView>
             <FormSection title="Rich Presence Settings" android_noDivider={true}>
                 <FormRow

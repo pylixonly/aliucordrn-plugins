@@ -1,15 +1,13 @@
 import { Plugin } from "aliucord/entities";
-import { UserStore, FluxDispatcher, getByProps, getModule } from "aliucord/metro";
-import { before } from "aliucord/utils/patcher";
-import LastFMClient from "./client/LastFMClient";
-import YoutubeClient from "./client/YoutubeClient";
-import RPCClient from "./client/RPCClient";
-import { setLogger } from "./utils/Logger";
+import { FluxDispatcher, UserStore } from "aliucord/metro";
 import { patchUI } from "./pages/patches";
-import { useSettings } from "aliucord/api";
 import { ActivityTypes } from "./types/Activity";
-import { clearInterval } from "timers";
-import { settings as RichPresenceSettings, defaults } from "./utils/Settings";
+import { setLogger } from "./utils/Logger";
+import { settings as RichPresenceSettings } from "./utils/Settings";
+
+import LastFMClient from "./client/LastFMClient";
+import RPCClient from "./client/RPCClient";
+import YoutubeClient from "./client/YoutubeClient";
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
@@ -37,7 +35,7 @@ export default class RichPresence extends Plugin {
                 const largeImage = settings.get("large_image");
                 const smallImage = settings.get("small_image");
 
-                const startTimestamp = settings.get("start_timestamp", "since_start");
+                const startTimestamp = settings.get("start_timestamp", -1);
                 const endTimestamp = settings.get("end_timestamp");
 
                 const request = await this.rpcClient.sendRPC({
@@ -46,7 +44,7 @@ export default class RichPresence extends Plugin {
                     state: settings.get("state"),
                     details: settings.get("details"),
                     ...(settings.get("enable_timestamps") ? { timestamps: {
-                        start: startTimestamp === "since_start" ? (Date.now() / 1000 | 0) : Number(startTimestamp),
+                        start: Number(startTimestamp) === -1 ? (Date.now() / 1000 | 0) : Number(startTimestamp),
                         ...(!!endTimestamp && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
                     }} : {}),
                     ...(largeImage || smallImage ? { assets: {
@@ -89,7 +87,7 @@ export default class RichPresence extends Plugin {
 
                     const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
                     this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
-                    (get("show_toast") ?? true) && window["aliucord"].metro.Toasts.open({ content: `Now playing ${track.name}` });
+                    (get("show_toast") ?? true) && window["aliucord"].metro.Toasts.open({ content: `Now playing: ${track.name}` });
                 });
                 break;
             case "none":

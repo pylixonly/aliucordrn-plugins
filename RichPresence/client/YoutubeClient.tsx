@@ -32,7 +32,7 @@ export default class YoutubeClient {
 
         for (const result of results.items) {
             // check if the track name matches, whitespaces are removed
-            if (track.name.replace(/\s/g, '') !== result.snippet.title.replace(/\s/g, '')) {
+            if (track.name.replace(/\s/g, '') !== result.snippet.title.replace(/\s/g, '').replace(/&quot;/g, '"')) {
                 RPLogger.info(`Track name mismatch: ${track.name} ≠ ${result.snippet.title}`);
                 continue;
             }
@@ -50,29 +50,5 @@ export default class YoutubeClient {
         }
 
         return null; // not found
-    }
-
-    async getDuration(videoId: string): Promise<number> {
-        RPLogger.info(`Fetching duration for ${videoId}..`);
-        const video = await fetch(`${this.apiUrl}/videos?part=contentDetails&id=${videoId}`);
-        const videoResults = await video.json();
-        const [videoResult] = videoResults.items;
-
-        RPLogger.info(`Duration for ${videoId} is ${videoResult.contentDetails.duration}`);
-
-        return this.convertToSeconds(videoResult.contentDetails.duration);
-    }
-
-    convertToSeconds(duration): number {
-        let match = duration
-            .match(/PT(\d+H)?(\d+M)?(\d+S)?/)
-            .slice(1)
-            .map((x: string) => x?.replace(/\D/, ''));
-
-        return (
-            (Number(match[0]) || 0) * 3600 +
-            (Number(match[1]) || 0) * 60 +
-            (Number(match[2]) || 0)
-        );
     }
 }

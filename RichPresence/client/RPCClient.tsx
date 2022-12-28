@@ -1,11 +1,8 @@
-import { FluxDispatcher, getByProps, getModule } from "aliucord/metro";
-import { RPLogger } from "../utils/Logger";
-import { Activity, ActivityTypes } from "../types/Activity";
-import RichPresence from "..";
 import { Patcher } from "aliucord/api";
+import { FluxDispatcher, getModule } from "aliucord/metro";
+import { Activity, ActivityTypes } from "../types/Activity";
 import { settings as RichPresenceSettings } from "../utils/Settings";
 
-const Toasts = (window as any).aliucord.metro.Toasts;
 const { SET_ACTIVITY } = getModule(x => !!x.SET_ACTIVITY);
 const { handler } = SET_ACTIVITY;
 
@@ -53,11 +50,6 @@ export default class RPCClient {
                 activity: activity ?? null
             }
         });
-
-        // if (!silent) {
-        //     RPLogger.info(`RPC ${activity ? "updated" : "cleared"}`, result);
-        //     Toasts.open({ content: `Rich presence ${activity ? "updated" : "cleared"}`})
-        // }
     }
 
     public async clearRPC(): Promise<any> {
