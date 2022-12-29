@@ -82,6 +82,8 @@ export default function RichPresenceSetupPage() {
                     {/* @ts-ignore */}
                     Timestamps are in Epoch seconds. You may use <Text style={styles.textLink} onPress={() => URLOpener.openURL("https://www.epochconverter.com/")}>this</Text> to convert your time to Unix Epoch time.
                 </Text>
+                {/* @ts-ignore */}
+                <View style={{ height: 12 }} />
                 <FormRow
                     label="Enable timestamps"
                     subLabel="Set whether to show timestamps or not"
