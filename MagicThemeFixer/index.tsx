@@ -4,7 +4,7 @@ import { Plugin } from "aliucord/entities"
 const AMOLEDTheme = getByProps("setAMOLEDThemeEnabled");
 
 export default class MagicThemeFixer extends Plugin {
-    public async start() {
+    public start() {
         // set AMOLED theme manually
         const turnONAMOLED = this.settings.get("setAMOLED", false);
         this.logger.info(`AMOLED theme is turned ${turnONAMOLED ? "on" : "off"}`);
@@ -25,8 +25,8 @@ export default class MagicThemeFixer extends Plugin {
 
                 (async () => {
                     this.logger.info("Doing the magic...");
-                    getByProps("overrideTheme").overrideTheme();
-                })();
+                    getByProps("overrideTheme").overrideTheme(getByProps("theme")?.theme ?? 'dark')
+                })()
             }
         });
     }
