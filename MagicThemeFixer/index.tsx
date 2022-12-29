@@ -15,19 +15,9 @@ export default class MagicThemeFixer extends Plugin {
             this.logger.info("setAMOLEDThemeEnabled", ctx.args[0]);
         });
 
-        // can't unpatch, else app will be unusable
-        let hit = false;
-        this.patcher.before(FluxDispatcher, "dispatch", (ctx) => {
-            if (hit) return;
-
-            if (ctx.args[0].type !== "USER_SETTINGS_THEME_OVERRIDE") {
-                hit = true;
-
-                (async () => {
-                    this.logger.info("Doing the magic...");
-                    getByProps("overrideTheme").overrideTheme(getByProps("theme")?.theme ?? 'dark')
-                })()
-            }
+        FluxDispatcher.subscribe("I18N_LOAD_START", () => {
+            this.logger.info("overriding on I18N_LOAD_START");
+            getByProps("overrideTheme").overrideTheme(getByProps("theme")?.theme ?? 'dark')
         });
     }
 

@@ -21,8 +21,7 @@ Magically fix the broken theming in AliucordRN
 
 > **Note**
 >
-> - Yes, it is fixed "magically". I have no idea what it does (besides the AMOLED part), so it might not work for everyone :trollface:
-> - AMOLED theme doesn't rely on Discord's settings and force set manually by the plugin during startup, but it should work as usual. You can toggle it in Appearance as usual or directly in `AliucordRN/settings/MagicThemeFixer.json`.
+> AMOLED theme doesn't rely on Discord's settings and force set manually by the plugin during startup, but it should work as usual. You can toggle it in Appearance as usual or directly in `AliucordRN/settings/MagicThemeFixer.json`.
 
 <details>
 <summary>Building plugins</summary>
