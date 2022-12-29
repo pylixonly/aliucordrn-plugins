@@ -1,44 +1,19 @@
-// @ts-ignore
-import { Forms, getByProps, React, ReactNative, Styles, Toasts } from "aliucord/metro";
-import { Fragment } from "react";
-import { open, patch } from "./guildAddPatch";
 import { Plugin } from "aliucord/entities";
-import { getAssetId } from "aliucord/utils";
+// @ts-ignore
+import { Forms, getByProps, React } from "aliucord/metro";
+import { Fragment } from "react";
+import { patch } from "./ClonerActionSheet";
+import { GrabberButtons } from "./GrabberButtons";
 
 const { FormDivider } = Forms;
-const Clipboard = getByProps("setString");
 const LazyActionSheet = getByProps("openLazy", "hideActionSheet");
-const Button = getByProps("ButtonColors", "ButtonLooks", "ButtonSizes").default as any;
-
-const styles = Styles.createThemedStyleSheet({
-    button: { marginTop: 14 }
-});
 
 export default class EmoteGrabber extends Plugin {
-    private GrabberButtons({ emojiNode }: any) {
-        return <>
-            <Button
-                text='Clone to Server' 
-                style={styles.button} 
-                color='brand'
-                size='small'
-                onPress={() => open(emojiNode)} 
-            />
-            <Button
-                text='Copy URL to Clipboard'
-                style={styles.button}
-                color='brand'
-                size='small'
-                onPress={() => {
-                    Clipboard.setString(emojiNode.src);
-                    Toasts.open({ content: "Copied URL to clipboard", source: getAssetId("Check") });
-                    LazyActionSheet.hideActionSheet("MessageEmojiActionSheet");
-                }}
-            />
-        </>
-    }
+    private static _instance;
+    static get instance() { return EmoteGrabber._instance; }
 
     public start() {
+        EmoteGrabber._instance = this;
         patch(this.patcher);
 
         this.patcher.before(LazyActionSheet, "openLazy", (ctx) => {
@@ -61,20 +36,20 @@ export default class EmoteGrabber extends Plugin {
 
                                 const buttonView = component.props?.children[3]?.props?.children
                                 if (buttonView) {
-                                    buttonView.push(<this.GrabberButtons emojiNode={emojiNode} />)
+                                    buttonView.push(<GrabberButtons emojiNode={emojiNode} />)
                                     return;
                                 }
 
-                                const unjoinedButtonView = component.props?.children.findIndex(x => x?.type === Button);
+                                const unjoinedButtonView = component.props?.children.findIndex(x => x?.type?.name === "Button");
 
                                 if (unjoinedButtonView !== -1) {
-                                    component.props?.children?.splice(unjoinedButtonView + 1, 0, <this.GrabberButtons emojiNode={emojiNode} />)
+                                    component.props?.children?.splice(unjoinedButtonView + 1, 0, <GrabberButtons emojiNode={emojiNode} />)
                                     return;
                                 }
 
                                 component.props?.children?.splice(-2, 0, <>
                                     <FormDivider />
-                                    <this.GrabberButtons emojiNode={emojiNode} />
+                                    <GrabberButtons emojiNode={emojiNode} />
                                 </>);
                             }
                         });
