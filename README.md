@@ -17,7 +17,7 @@ Hides the gift button next to chat input
 Grab emote's link or clone them to your server
 
 ### [ThemePatcher](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/ThemePatcher.zip)
-Patch coloring in AliucordRN (turn on dark mode)
+Patch coloring in AliucordRN (settings/ThemePatcher.json)
 
 <details>
 <summary>Building plugins</summary>
