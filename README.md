@@ -16,12 +16,8 @@ Hides the gift button next to chat input
 ### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip)
 Grab emote's link or clone them to your server
 
-### [MagicThemeFixer](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/MagicThemeFixer.zip)
-Magically fix the broken theming in AliucordRN
-
-> **Note**
->
-> AMOLED theme doesn't rely on Discord's settings and force set manually by the plugin during startup, but it should work as usual. You can toggle it in Appearance as usual or directly in `AliucordRN/settings/MagicThemeFixer.json`.
+### [ThemePatcher](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/ThemePatcher.zip)
+Patch coloring in AliucordRN (turn on dark mode)
 
 <details>
 <summary>Building plugins</summary>
