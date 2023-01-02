@@ -1,4 +1,5 @@
 import { getByProps, Constants, FluxDispatcher } from "aliucord/metro";
+import { after } from "aliucord/utils/patcher";
 import { Plugin } from "aliucord/entities"
 
 const AMOLEDTheme = getByProps("setAMOLEDThemeEnabled");
@@ -32,6 +33,10 @@ export default class ThemePatcher extends Plugin {
         for (const key in newColors) {
             Constants.Colors[key] = newColors[key];
         }
+
+        after(window.aliucord.metro.getByName("ChatInput").default.prototype, "render", (ctx, comp) => {
+            comp.props.children[2].props.children.props.style[0].backgroundColor = newTcm["BACKGROUND_PRIMARY"];
+        })
 
         AMOLEDTheme.enableAMOLEDThemeOption();
     }
