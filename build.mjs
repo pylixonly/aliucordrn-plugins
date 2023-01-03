@@ -46,6 +46,6 @@ if (proc.error) {
     const exec = (cmd) => execSync(cmd, { stdio: "inherit" });
     console.log("Deploying plugin to device...");
     exec(`adb push ./dist/${plugin}.zip /sdcard/AliucordRN/plugins/`);
-    exec(`adb shell am force-stop com.discord`)
-    exec(`adb shell am start -n com.discord/.main.MainActivity`)
+    exec(`adb shell am force-stop com.aliucord`)
+    exec(`adb shell am start -S -n com.aliucord/com.discord.main.MainActivity`)
 }

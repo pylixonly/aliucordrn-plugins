@@ -1,4 +1,4 @@
-import { getByProps, Constants, FluxDispatcher } from "aliucord/metro";
+import { getByProps, Constants, getByName } from "aliucord/metro";
 import { after } from "aliucord/utils/patcher";
 import { Plugin } from "aliucord/entities"
 
@@ -34,8 +34,14 @@ export default class ThemePatcher extends Plugin {
             Constants.Colors[key] = newColors[key];
         }
 
-        after(window.aliucord.metro.getByName("ChatInput").default.prototype, "render", (ctx, comp) => {
-            comp.props.children[2].props.children.props.style[0].backgroundColor = newTcm["BACKGROUND_PRIMARY"];
+        // Chat Box
+        after(getByName("ChatInput").default.prototype, "render", (_, comp) => {
+            comp.props.children[2].props.children.props.style[0].backgroundColor = newTcm["BACKGROUND_SECONDARY"][1];
+        })
+
+        // Navigation Bar
+        after(getByName("ChannelSafeAreaBottom"), "default", (_, comp) => {
+            comp.props.style.backgroundColor = newTcm["BACKGROUND_SECONDARY"][1];
         })
 
         AMOLEDTheme.enableAMOLEDThemeOption();
