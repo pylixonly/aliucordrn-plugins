@@ -16,8 +16,12 @@ Hides the gift button next to chat input
 ### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip)
 Grab emote's link or clone them to your server
 
-### [ThemePatcher](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/ThemePatcher.zip)
+### [ThemePatcher](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/ThemePatcher.zip) (EXPERIMENTAL!)
 Patch coloring in AliucordRN (settings/ThemePatcher.json)
+> **Warning**
+>
+> ThemePatcher is experimental and only expected to behave correctly with AliucordRN with commit [`f8e7d3e`](https://github.com/Aliucord/AliucordRN/tree/f8e7d3e5e0c1569317e4e99c76e8c3d0acb5959e) or earlier. Builds with commit further than that might have to re-apply the theme by turning off->on AMOLED theme every app restart
+
 
 <details>
 <summary>Building plugins</summary>
