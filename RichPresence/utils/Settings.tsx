@@ -11,7 +11,7 @@ export const defaults = {
 export const settings = {
     get enabled() { return settingsInstance().get("enabled", false) },
     get mode() { return settingsInstance().get("mode", "none") },
-    get applicationId() { return settingsInstance().get("appID", defaults.discord_application_id) },
+    get applicationId() { return settingsInstance().get("appID", "") || defaults.discord_application_id },
 
     lastFm: {
         get enabled() { return settingsInstance().get("mode", "none") === "lastfm" },

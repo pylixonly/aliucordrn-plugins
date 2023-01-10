@@ -22,8 +22,8 @@ if (plugin === "--watch") {
     plugin = argv[3];
 }
 
-let packageName;
-if ((packageName = argv.pop()) === argv[2] || packageName === argv[3]) {
+let packageName = argv.pop();
+if (packageName === argv[2] || packageName === argv[3]) {
     packageName = null;
 }
 
