@@ -22,6 +22,11 @@ if (plugin === "--watch") {
     plugin = argv[3];
 }
 
+let packageName;
+if ((packageName = argv.pop()) === argv[2] || packageName === argv[3]) {
+    packageName = null;
+}
+
 check(!!plugin, `Usage: ${argv.join(" ")} <PLUGIN>`);
 
 let path = null
@@ -46,6 +51,6 @@ if (proc.error) {
     const exec = (cmd) => execSync(cmd, { stdio: "inherit" });
     console.log("Deploying plugin to device...");
     exec(`adb push ./dist/${plugin}.zip /sdcard/AliucordRN/plugins/`);
-    exec(`adb shell am force-stop com.aliucord`)
-    exec(`adb shell am start -S -n com.aliucord/com.discord.main.MainActivity`)
+    exec(`adb shell am force-stop ${packageName ?? "com.aliucord"}`)
+    exec(`adb shell am start -S -n ${packageName ?? "com.aliucord"}/com.discord.main.MainActivity`)
 }

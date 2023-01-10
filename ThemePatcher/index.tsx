@@ -1,3 +1,4 @@
+// @ts-ignore
 import { getByProps, Constants, getByName } from "aliucord/metro";
 import { after } from "aliucord/utils/patcher";
 import { Plugin } from "aliucord/entities"
