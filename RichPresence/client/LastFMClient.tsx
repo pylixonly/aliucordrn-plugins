@@ -71,7 +71,7 @@ export default class LastFMClient {
             'extended': '1'
         }).toString();
 
-        const response = await fetch(`http://ws.audioscrobbler.com/2.0/?${params}`).then(x => x.json());
+        const response = await fetch(`https://ws.audioscrobbler.com/2.0/?${params}`).then(x => x.json());
 
         const [track] = response.recenttracks.track;
         return this.mapTrack(track);
