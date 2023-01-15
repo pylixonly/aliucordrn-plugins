@@ -1,13 +1,14 @@
 import { Plugin } from "aliucord/entities";
-import { FluxDispatcher, UserStore } from "aliucord/metro";
+import { FluxDispatcher, UserStore, React } from "aliucord/metro";
 import { patchUI } from "./pages/patches";
 import { ActivityTypes } from "./types/Activity";
 import { setLogger } from "./utils/Logger";
-import { settings as RichPresenceSettings } from "./utils/Settings";
+import { settings as RichPresenceConfig } from "./utils/Settings";
 
 import LastFMClient from "./client/LastFMClient";
 import RPCClient from "./client/RPCClient";
 import YoutubeClient from "./client/YoutubeClient";
+import RichPresenceSettings from "./pages/RichPresenceSettings";
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
@@ -21,15 +22,15 @@ export default class RichPresence extends Plugin {
         
         await this.rpcClient.clearRPC();
 
-        if (!RichPresenceSettings.enabled) {
+        if (!RichPresenceConfig.enabled) {
             return;
         }
 
         this.logger.info("Starting RPC...");
 
-        switch (RichPresenceSettings.mode) {
+        switch (RichPresenceConfig.mode) {
             case "custom":
-                const settings = RichPresenceSettings.custom;
+                const settings = RichPresenceConfig.custom;
                 this.logger.info("Starting user-set RPC...");
 
                 const largeImage = settings.get("large_image");
@@ -64,8 +65,8 @@ export default class RichPresence extends Plugin {
                 this.logger.info("Streaming last.fm...");
 
                 this.lfmClient = new LastFMClient(
-                    RichPresenceSettings.lastFm.get("apiKey"),
-                ).setUsername(RichPresenceSettings.lastFm.get("username"));
+                    RichPresenceConfig.lastFm.get("apiKey"),
+                ).setUsername(RichPresenceConfig.lastFm.get("username"));
 
                 await this.lfmClient.stream(async (track) => {
                     if (!track || !this.lfmClient) {
@@ -73,7 +74,7 @@ export default class RichPresence extends Plugin {
                         return;
                     }
 
-                    const { get } = RichPresenceSettings.lastFm;
+                    const { get } = RichPresenceConfig.lastFm;
                     if (get("youtube_fallback") && (get("show_album_art") ?? true) && !track.albumArt) {
                         const matching = await this.ytmClient.findYoutubeEquivalent(track);
                         if (matching) {
@@ -118,5 +119,9 @@ export default class RichPresence extends Plugin {
     public stop() {
         this.lfmClient?.clear();
         this.rpcClient.clearRPC();
+    }
+
+    public getSettingsPage({ navigation }) {
+        return <RichPresenceSettings navigation={navigation} />;
     }
 }

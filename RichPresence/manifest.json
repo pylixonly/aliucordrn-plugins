@@ -1,5 +1,6 @@
 {
     "name": "RichPresence",
     "description": "Allows you to set your Discord Rich Presence based on your last.fm or your custom settings",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "repo": "https://github.com/amsyarasyiq/aliucordrn-plugins"
 }
