@@ -1,6 +1,5 @@
 import { Plugin } from "aliucord/entities";
 import { FluxDispatcher, UserStore, React } from "aliucord/metro";
-import { patchUI } from "./pages/patches";
 import { ActivityTypes } from "./types/Activity";
 import { setLogger } from "./utils/Logger";
 import { settings as RichPresenceConfig } from "./utils/Settings";
@@ -106,7 +105,6 @@ export default class RichPresence extends Plugin {
         });
 
         setLogger(this.logger);
-        patchUI(this);
         this.rpcClient.patchFilter(this.patcher);
 
         if (UserStore.getCurrentUser()) {
@@ -121,7 +119,7 @@ export default class RichPresence extends Plugin {
         this.rpcClient.clearRPC();
     }
 
-    public getSettingsPage({ navigation }) {
-        return <RichPresenceSettings navigation={navigation} />;
+    public getSettingsPage() {
+        return <RichPresenceSettings />;
     }
 }

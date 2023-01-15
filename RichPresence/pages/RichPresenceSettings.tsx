@@ -1,15 +1,18 @@
-import { Forms, React, ReactNative } from "aliucord/metro";
+import { Forms, React, ReactNative, Navigation } from "aliucord/metro";
 import { getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
 import { defaults, getSettings } from "../utils/Settings";
+import LastFMConfigurePage from "./LastFMConfigurePage";
+import { Page } from "./Page";
+import RichPresenceSetupPage from "./RichPresenceSetupPage";
 
 const { ScrollView } = ReactNative;
 
 const { FormRow, FormSection, FormSwitch, FormInput, FormDivider } = Forms;
 const Toasts = (window as any).aliucord.metro.Toasts;
 
-export default function RichPresenceSettings({ navigation }) {
+export default function RichPresenceSettings() {
     const { get, set } = getSettings();
     const checkIcon = getAssetId("checked");
 
@@ -106,13 +109,13 @@ export default function RichPresenceSettings({ navigation }) {
                     label="Configure Last.fm settings"
                     subLabel="Show what you're listening to through Last.fm."
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.push("LastFMConfigurePage")}
+                    onPress={() => Navigation.push(Page, { name: "Configure LastFM", children: LastFMConfigurePage })}
                 />
                 <FormRow
                     label="Configure custom rich presence"
                     subLabel="Show how cool you are to your friends by manually customizing your rich presence."
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.push("RichPresenceSetupPage")}
+                    onPress={() => Navigation.push(Page, { name: "Rich Presence Setup", children: RichPresenceSetupPage })}
                 />
             </FormSection>
         </ScrollView>
