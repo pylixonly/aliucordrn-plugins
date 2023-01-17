@@ -1,16 +1,19 @@
-import { Forms, React, ReactNative } from "aliucord/metro";
+import { Forms, getByProps, React, ReactNative } from "aliucord/metro";
 import { getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
 import { defaults, getSettings } from "../utils/Settings";
+import LastFMConfigurePage from "./LastFMConfigurePage";
+import RichPresenceSetupPage from "./RichPresenceSetupPage";
 
 const { ScrollView } = ReactNative;
 
 const { FormRow, FormSection, FormSwitch, FormInput, FormDivider } = Forms;
 const Toasts = (window as any).aliucord.metro.Toasts;
 
-export default function RichPresenceSettings({ navigation }) {
+export default function RichPresenceSettings() {
     const { get, set } = getSettings();
+    const navigation = getByProps("NavigationContainer").useNavigation();
     const checkIcon = getAssetId("checked");
 
     return (<>
@@ -106,15 +109,31 @@ export default function RichPresenceSettings({ navigation }) {
                     label="Configure Last.fm settings"
                     subLabel="Show what you're listening to through Last.fm."
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.push("LastFMConfigurePage")}
+                    onPress={() => {
+                        if (aliucord.metro.Navigation) {
+                            navigation.push("AliuPluginSettingsWrapper", LastFMConfigurePage);
+                            return;
+                        }
+
+                        navigation.push("LastFMConfigurePage");
+                    }}
                 />
                 <FormRow
                     label="Configure custom rich presence"
                     subLabel="Show how cool you are to your friends by manually customizing your rich presence."
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.push("RichPresenceSetupPage")}
+                    onPress={() => {
+                        if (aliucord.metro.Navigation) {
+                            navigation.push("AliuPluginSettingsWrapper", RichPresenceSetupPage);
+                            return;
+                        }
+                        
+                        navigation.push("RichPresenceSetupPage")
+                    }}
                 />
             </FormSection>
         </ScrollView>
     </>)
 }
+
+declare const aliucord: any;

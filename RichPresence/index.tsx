@@ -121,7 +121,7 @@ export default class RichPresence extends Plugin {
         this.rpcClient.clearRPC();
     }
 
-    public getSettingsPage({ navigation }) {
-        return <RichPresenceSettings navigation={navigation} />;
+    public getSettingsPage() {
+        return <RichPresenceSettings />;
     }
 }
