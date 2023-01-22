@@ -110,8 +110,12 @@ export default function RichPresenceSettings() {
                     subLabel="Show what you're listening to through Last.fm."
                     trailing={FormRow.Arrow}
                     onPress={() => {
-                        if (aliucord.metro.Navigation) {
-                            navigation.push("AliuPluginSettingsWrapper", LastFMConfigurePage);
+                        if (aliucord.ui?.Page) {
+                            const { ui: { Page }, metro: { Navigation } } = aliucord;
+                            Navigation.push(Page, {
+                                name: "Rich Presence Setup",
+                                children: LastFMConfigurePage
+                            });
                             return;
                         }
 
@@ -123,8 +127,12 @@ export default function RichPresenceSettings() {
                     subLabel="Show how cool you are to your friends by manually customizing your rich presence."
                     trailing={FormRow.Arrow}
                     onPress={() => {
-                        if (aliucord.metro.Navigation) {
-                            navigation.push("AliuPluginSettingsWrapper", RichPresenceSetupPage);
+                        if (aliucord.ui?.Page) {
+                            const { ui: { Page }, metro: { Navigation } } = aliucord;
+                            Navigation.push(Page, {
+                                name: "Last.fm Configurations",
+                                children: LastFMConfigurePage
+                            });
                             return;
                         }
                         
