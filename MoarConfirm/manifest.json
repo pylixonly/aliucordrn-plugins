@@ -1,0 +1,5 @@
+{
+    "name": "MoarConfirm",
+    "description": "Prompt confirmation dialogs before making a common irreversible action.",
+    "version": "0.1.0"
+}
