@@ -14,7 +14,8 @@ Don't idle when Discord is running in the background
 Hides the gift button next to chat input
 
 ### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip)
-Grab emote's link or clone them to your server
+Grab emote's link or clone them to your server.\
+Huge thanks to Fiery (from his Enmity's [@FierysDiscordAddons/Stealmoji](https://github.com/FierysDiscordAddons/Stealmoji) plugin)
 
 <details>
 <summary>Deprecated plugins</summary>
