@@ -113,7 +113,7 @@ export default function RichPresenceSettings() {
                         if (aliucord.ui?.Page) {
                             const { ui: { Page }, metro: { Navigation } } = aliucord;
                             Navigation.push(Page, {
-                                name: "Rich Presence Setup",
+                                name: "Last.fm Configurations",
                                 children: LastFMConfigurePage
                             });
                             return;
@@ -130,8 +130,8 @@ export default function RichPresenceSettings() {
                         if (aliucord.ui?.Page) {
                             const { ui: { Page }, metro: { Navigation } } = aliucord;
                             Navigation.push(Page, {
-                                name: "Last.fm Configurations",
-                                children: LastFMConfigurePage
+                                name: "Rich Presence Setup",
+                                children: RichPresenceSetupPage
                             });
                             return;
                         }
