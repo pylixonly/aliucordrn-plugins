@@ -1,11 +1,11 @@
 import { Forms, React, ReactNative } from "aliucord/metro";
-import { defaults, getSettings } from "../utils/Settings";
+import { defaults, useSettings } from "../utils/Settings";
 
 const { ScrollView } = ReactNative;
 const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
 
 export default function LastFMConfigurePage() {
-const { get, set } = getSettings("lastfm");
+const { get, set } = useSettings("lastfm");
 
     return (<>
             {/*// @ts-ignore */}

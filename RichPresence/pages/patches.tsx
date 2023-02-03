@@ -1,51 +1,30 @@
-import { Forms, React } from "aliucord/metro";
+import { Forms, React, getByName, getByProps } from "aliucord/metro";
 import { findInReactTree, getAssetId } from "aliucord/utils";
-import LastFMConfigurePage from "./LastFMConfigurePage";
-import RichPresenceSettings from "./RichPresenceSettings";
-import RichPresenceSetupPage from "./RichPresenceSetupPage";
+import RichPresence from "..";
+
+declare const aliucord: any;
+declare module "aliucord/metro" {
+    export function getByName(name: string, options?: any): any;
+}
 
 export const patchUI = (plugin) => {
-    const { getByName } = (window as any).aliucord.metro;
-
-    const Scenes = getByName("getScreens", { default: false });
     const { FormRow } = Forms;
 
+    const Navigation = aliucord.metro.Navigation ?? getByProps("push", "pushLazy", "pop");
     const UserSettingsOverviewWrapper = getByName("UserSettingsOverviewWrapper", { default: false });
-
-    plugin.patcher.after(Scenes, "default", (_, res: any) => {
-        return {
-            ...res,
-            RichPresenceSettings: {
-                key: "RichPresenceSettings",
-                title: "Rich Presence",
-                render: RichPresenceSettings
-            },
-            RichPresenceSetupPage: {
-                key: "RichPresenceSetupPage",
-                title: "Rich Presence Setup",
-                render: RichPresenceSetupPage
-            },
-            LastFMConfigurePage: {
-                key: "LastFMConfigurePage",
-                title: "Configure LastFM",
-                render: LastFMConfigurePage
-            }
-        }
-    });
 
     const unpatch = plugin.patcher.after(UserSettingsOverviewWrapper, "default", (_, res) => {
         const Overview = findInReactTree(res, m => m.type?.name === "UserSettingsOverview");
 
         plugin.patcher.after(Overview.type.prototype, "render", (res, { props }) => {
             const { children } = props;
-            const { navigation } = res.thisObject.props;
 
             children.splice(4, 0, <>
-                <FormRow 
-                    leading={<FormRow.Icon source={getAssetId("ic_link")}/>}
+                <FormRow
+                    leading={<FormRow.Icon source={getAssetId("ic_link")} />}
                     label="Rich Presence"
                     trailing={FormRow.Arrow}
-                    onPress={() => navigation.navigate("RichPresenceSettings", { navigation })}
+                    onPress={() => Navigation.push(RichPresence.classInstance.SettingsModal)}
                 />
             </>)
         });

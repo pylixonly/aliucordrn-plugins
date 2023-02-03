@@ -1,6 +1,6 @@
 import { Plugin } from "aliucord/entities";
-import { FluxDispatcher, UserStore, React } from "aliucord/metro";
-import { patchUI } from "./pages/patches";
+import { FluxDispatcher, getByProps, React, UserStore } from "aliucord/metro";
+// import { patchUI } from "./pages/patches";
 import { ActivityTypes } from "./types/Activity";
 import { setLogger } from "./utils/Logger";
 import { settings as RichPresenceConfig } from "./utils/Settings";
@@ -8,18 +8,23 @@ import { settings as RichPresenceConfig } from "./utils/Settings";
 import LastFMClient from "./client/LastFMClient";
 import RPCClient from "./client/RPCClient";
 import YoutubeClient from "./client/YoutubeClient";
+import LastFMConfigurePage from "./pages/LastFMConfigurePage";
+import { patchUI } from "./pages/patches";
 import RichPresenceSettings from "./pages/RichPresenceSettings";
+import RichPresenceSetupPage from "./pages/RichPresenceSetupPage";
+
+declare const aliucord: any;
 
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
-    
+
     rpcClient = new RPCClient();
     ytmClient = new YoutubeClient();
     lfmClient?: LastFMClient;
 
     public async init() {
         this.lfmClient?.clear();
-        
+
         await this.rpcClient.clearRPC();
 
         if (!RichPresenceConfig.enabled) {
@@ -44,19 +49,23 @@ export default class RichPresence extends Plugin {
                     type: ActivityTypes.GAME, // PLAYING
                     state: settings.get("state"),
                     details: settings.get("details"),
-                    ...(settings.get("enable_timestamps") ? { timestamps: {
-                        start: Number(startTimestamp) === -1 ? (Date.now() / 1000 | 0) : Number(startTimestamp),
-                        ...(!!endTimestamp && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
-                    }} : {}),
-                    ...(largeImage || smallImage ? { assets: {
-                        large_image: largeImage,
-                        large_text: !!largeImage ? settings.get("large_image_text") : undefined,
-                        small_image: settings.get("small_image"),
-                        small_text: !!largeImage ? settings.get("small_image_text") : undefined
-                    }} : {}),
+                    ...(settings.get("enable_timestamps") ? {
+                        timestamps: {
+                            start: Number(startTimestamp) === -1 ? (Date.now() / 1000 | 0) : Number(startTimestamp),
+                            ...(!!endTimestamp && !isNaN(+endTimestamp) ? { end: Number(endTimestamp) } : {})
+                        }
+                    } : {}),
+                    ...(largeImage || smallImage ? {
+                        assets: {
+                            large_image: largeImage,
+                            large_text: !!largeImage ? settings.get("large_image_text") : undefined,
+                            small_image: settings.get("small_image"),
+                            small_text: !!largeImage ? settings.get("small_image_text") : undefined
+                        }
+                    } : {}),
                     buttons: [
-                        { label: settings.get("button1_text"), url: settings.get("button1_URL")},
-                        { label: settings.get("button2_text"), url: settings.get("button2_URL")}
+                        { label: settings.get("button1_text"), url: settings.get("button1_URL") },
+                        { label: settings.get("button2_text"), url: settings.get("button2_URL") }
                     ].filter(x => !!x.label),
                 });
                 this.logger.info("Started user-set RPC. SET_ACTIVITY: ", request);
@@ -80,11 +89,11 @@ export default class RichPresence extends Plugin {
                         if (matching) {
                             track = this.ytmClient.applyToTrack(matching, track);
                         } else {
-                            this.logger.info(`${track.artist} - ${track.name} has no album art.`)
+                            this.logger.info(`${track.artist} - ${track.name} has no album art.`);
                         }
                     }
 
-                    track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`
+                    track.ytUrl ??= `https://music.youtube.com/search?q=${encodeURIComponent(track.artist + " " + track.name)}`;
 
                     const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
                     this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
@@ -100,9 +109,9 @@ export default class RichPresence extends Plugin {
     public start() {
         RichPresence.classInstance = this;
         const init = () => this.init().then(() => {
-            this.logger.info("RPC started!")
+            this.logger.info("RPC started!");
         }).catch(e => {
-            this.logger.error(e)
+            this.logger.error(e);
         });
 
         setLogger(this.logger);
@@ -121,7 +130,32 @@ export default class RichPresence extends Plugin {
         this.rpcClient.clearRPC();
     }
 
-    public getSettingsPage() {
-        return <RichPresenceSettings />;
+    public SettingsModal() {
+        const Navigation = aliucord.metro.Navigation ?? getByProps("push", "pushLazy", "pop");
+        const DiscordNavigator = aliucord.metro.DiscordNavigator ?? getByProps("getRenderCloseButton");
+        const { default: Navigator, getRenderCloseButton } = DiscordNavigator;
+
+        return (
+            <Navigator
+                initialRouteName="RichPresenceSettings"
+                goBackOnBackPress={true}
+                screens={{
+                    RichPresenceSettings: {
+                        title: "Rich Presence",
+                        headerLeft: getRenderCloseButton(() => Navigation.pop()),
+                        render: RichPresenceSettings
+                    },
+                    RichPresenceSetupPage: {
+                        title: "Rich Presence Setup",
+                        render: RichPresenceSetupPage
+                    },
+                    LastFMConfigurePage: {
+                        title: "Configure LastFM",
+                        render: LastFMConfigurePage
+                    }
+                }}
+            />
+        );
+
     }
 }

@@ -1,5 +1,5 @@
 import { Forms, React, ReactNative, Styles, Constants, URLOpener } from "aliucord/metro";
-import { getSettings } from "../utils/Settings";
+import { useSettings } from "../utils/Settings";
 
 const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
 const { View, Text, ScrollView } = ReactNative;
@@ -19,7 +19,7 @@ const styles = Styles.createThemedStyleSheet({
 });
 
 export default function RichPresenceSetupPage() {
-    const { get, set } = getSettings("customRpc");
+    const { get, set } = useSettings("customRpc");
     
     return (<>
         {/*// @ts-ignore */}

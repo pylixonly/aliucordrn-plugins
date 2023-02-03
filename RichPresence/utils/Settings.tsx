@@ -28,7 +28,7 @@ export const settings = {
     }
 }
 
-export const getSettings = (name?: string) => {
+export const useSettings = (name?: string) => {
     const [, forceUpdate] = React.useReducer(x => x + 1, 0);
     return {
         get(key, defaultValue?) {

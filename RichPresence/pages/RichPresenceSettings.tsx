@@ -2,7 +2,7 @@ import { Forms, getByProps, React, ReactNative } from "aliucord/metro";
 import { getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 import { RPLogger } from "../utils/Logger";
-import { defaults, getSettings } from "../utils/Settings";
+import { defaults, useSettings } from "../utils/Settings";
 import LastFMConfigurePage from "./LastFMConfigurePage";
 import RichPresenceSetupPage from "./RichPresenceSetupPage";
 
@@ -12,7 +12,7 @@ const { FormRow, FormSection, FormSwitch, FormInput, FormDivider } = Forms;
 const Toasts = (window as any).aliucord.metro.Toasts;
 
 export default function RichPresenceSettings() {
-    const { get, set } = getSettings();
+    const { get, set } = useSettings();
     const navigation = getByProps("NavigationContainer").useNavigation();
     const checkIcon = getAssetId("checked");
 
@@ -110,6 +110,11 @@ export default function RichPresenceSettings() {
                     subLabel="Show what you're listening to through Last.fm."
                     trailing={FormRow.Arrow}
                     onPress={() => {
+                        if (aliucord.metro.DiscordNavigator) {
+                            navigation.push("LastFMConfigurePage");
+                            return;
+                        }
+                        
                         if (aliucord.ui?.Page) {
                             const { ui: { Page }, metro: { Navigation } } = aliucord;
                             Navigation.push(Page, {
@@ -127,6 +132,11 @@ export default function RichPresenceSettings() {
                     subLabel="Show how cool you are to your friends by manually customizing your rich presence."
                     trailing={FormRow.Arrow}
                     onPress={() => {
+                        if (aliucord.metro.DiscordNavigator) {
+                            navigation.push("RichPresenceSetupPage");
+                            return;
+                        }
+
                         if (aliucord.ui?.Page) {
                             const { ui: { Page }, metro: { Navigation } } = aliucord;
                             Navigation.push(Page, {
