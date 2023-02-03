@@ -9,12 +9,12 @@ export default defineConfig({
     plugins: [
         aliucordPlugin({
             autoDeploy: !!process.env.ROLLUP_WATCH,
-            hermesPath: "node_modules/hermes-engine"
+            packageName: "com.aliucord"
         }),
         makeManifest({
             baseManifest: "baseManifest.json",
             manifest: `${process.env.plugin}/manifest.json`
-	}),
+        }),
         makePluginZip()
     ]
 });
