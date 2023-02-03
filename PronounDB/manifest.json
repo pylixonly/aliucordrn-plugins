@@ -1,0 +1,5 @@
+{
+    "name": "PronounDB",
+    "description": "Purely proof of concept plugin to show pronouns on messages. Don't expect it to behave well.",
+    "version": "0.1.0"
+}
