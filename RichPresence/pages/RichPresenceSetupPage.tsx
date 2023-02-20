@@ -1,26 +1,28 @@
-import { Forms, React, ReactNative, Styles, Constants, URLOpener } from "aliucord/metro";
+import { Forms, React, ReactNative, Styles, Constants, URLOpener, getByProps } from "aliucord/metro";
 import { useSettings } from "../utils/Settings";
 
 const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
 const { View, Text, ScrollView } = ReactNative;
+
+const ThemeColorMap = Styles.ThemeColorMap ?? getByProps("SemanticColor").SemanticColor;
 
 const styles = Styles.createThemedStyleSheet({
     subText: {
         fontSize: 14,
         marginLeft: 16,
         marginRight: 16,
-        color: Styles.ThemeColorMap.TEXT_MUTED,
+        color: ThemeColorMap.TEXT_MUTED,
         fontFamily: Constants.Fonts.PRIMARY_NORMAL
     },
 
     textLink: {
-        color: Styles.ThemeColorMap.TEXT_LINK,
+        color: ThemeColorMap.TEXT_LINK,
     }
 });
 
 export default function RichPresenceSetupPage() {
     const { get, set } = useSettings("customRpc");
-    
+
     return (<>
         {/*// @ts-ignore */}
         <ScrollView>
@@ -87,9 +89,9 @@ export default function RichPresenceSetupPage() {
                 <FormRow
                     label="Enable timestamps"
                     subLabel="Set whether to show timestamps or not"
-                    trailing={<FormSwitch 
-                        value={get("enable_timestamps")} 
-                        onValueChange={v => set("enable_timestamps", v)} 
+                    trailing={<FormSwitch
+                        value={get("enable_timestamps")}
+                        onValueChange={v => set("enable_timestamps", v)}
                     />}
                 />
                 <FormInput
@@ -107,7 +109,7 @@ export default function RichPresenceSetupPage() {
                     onChange={v => set("end_timestamp", v)}
                 />
                 <FormRow
-                    label="Use current time as start timestamp" 
+                    label="Use current time as start timestamp"
                     subLabel="This will override the start timestamp you set above"
                     disabled={!get("enable_timestamps", false)}
                     onPress={() => {
@@ -140,7 +142,7 @@ export default function RichPresenceSetupPage() {
                     placeholder="random link #2"
                     onChange={v => set("button2_text", v)}
                 />
-                <FormInput                    
+                <FormInput
                     title="Second Button URL"
                     value={get("button2_URL")}
                     placeholder="https://youtu.be/w0AOGeqOnFY"
