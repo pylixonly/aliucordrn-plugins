@@ -43,7 +43,7 @@ export default class PronounDB extends Plugin {
             return;
         }
 
-        const queue = this.queue.splice(0, 15);
+        const queue = this.queue.splice(0, 100);
 
         const params = new URLSearchParams();
         params.append("platform", "discord");
@@ -72,15 +72,20 @@ export default class PronounDB extends Plugin {
     public start() {
         this.patcher.before(UserStore, "getUser", (ctx, id) => {
             this.fetchPronoun(id);
-        })
+        });
 
         this.patcher.before(DCDChatManager, "updateRows", ({ args }) => {
             const rows = JSON.parse(args[1]);
-            for (const row of rows) {
-                if (row.type !== 1) continue; // is not a message
 
-                if (row.message.authorId && row.message.timestamp && this.pronounMap[row.message.authorId]) {
-                    row.message.timestamp += " • " + PronounMapping[this.pronounMap[row.message.authorId]];
+            for (const row of rows) {
+                const { type, message } = row;
+                if (type !== 1 || message?.pronoun || !message?.authorId || !message.timestamp) continue; // skip
+
+                const pronoun = PronounMapping[this.pronounMap[message.authorId]];
+
+                if (pronoun) {
+                    message.timestamp += " • " + pronoun;
+                    message.pronoun = true;
                 }
             }
 
