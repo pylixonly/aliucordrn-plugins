@@ -1,5 +1,5 @@
 import { Plugin } from "aliucord/entities";
-import { FluxDispatcher, getByProps, React, UserStore } from "aliucord/metro";
+import { FluxDispatcher, getByProps, React, Toasts, UserStore } from "aliucord/metro";
 // import { patchUI } from "./pages/patches";
 import { ActivityTypes } from "./types/Activity";
 import { setLogger } from "./utils/Logger";
@@ -95,7 +95,7 @@ export default class RichPresence extends Plugin {
 
                     const request = await this.rpcClient.sendRPC(this.lfmClient.mapToRPC(track));
                     this.logger.log("Updated last.fm activity, SET_ACTIVITY: ", request);
-                    (get("show_toast") ?? true) && window["aliucord"].metro.Toasts.open({ content: `Now playing: ${track.name}` });
+                    (get("show_toast") ?? true) && Toasts.open({ content: `Now playing: ${track.name}` });
                 });
                 break;
             case "none":
