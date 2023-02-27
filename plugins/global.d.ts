@@ -35,6 +35,8 @@ declare global {
             cacheDirectory: string;
             packageCodePath: string;
         };
+
+        DCDFileManager: any;
     }
 
     class ZipFile {
@@ -64,6 +66,7 @@ declare module 'aliucord' {
     module utils {
         module constants {
             export const PLUGINS_DIRECTORY: string;
+            export const ALIUCORD_DIRECTORY: string;
         }
     }
 

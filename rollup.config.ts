@@ -10,7 +10,8 @@ export default defineConfig({
         if ([
             "CIRCULAR_DEPENDENCY",
             "UNUSED_EXTERNAL_IMPORT",
-            'MISSING_NAME_OPTION_FOR_IIFE_EXPORT'
+            "MISSING_NAME_OPTION_FOR_IIFE_EXPORT",
+            "EVAL"
         ].includes(warning.code!)) return;
 
         if (
