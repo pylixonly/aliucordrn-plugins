@@ -6,8 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "watch": "node build.mjs --watch",
-    "buildAll:windows": "for /d %i in (plugins/*) do pnpm build %i",
-    "buildAll:linux": "for i in plugins/*; do pnpm build $i; done"
+    "buildAll": "node build.mjs --all"
   },
   "devDependencies": {
     "@aliucord/hermesc": "^0.70.6-aliucord-2",

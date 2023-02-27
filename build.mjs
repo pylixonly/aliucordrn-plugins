@@ -7,6 +7,14 @@ import { argv, cwd, exit } from "process";
 // get all arguments
 const args = argv.slice(2);
 
+if (args.includes("--all")) {
+    const plugins = readdirSync("plugins").filter(file => existsSync(join("plugins", file, "manifest.json")));
+    for (const plugin of plugins) {
+        execSync(`pnpm build ${plugin}`, { stdio: "inherit" })
+    }
+    exit(0);
+}
+
 const plugin = args.find(arg => !arg.startsWith("--"));
 
 if (!plugin) {
@@ -18,7 +26,7 @@ if (!plugin) {
 const packageName = args.find(arg => arg.startsWith("--package="))?.split("=")[1];
 const watch = args.includes("--watch") || args.includes("-w");
 
-const pluginDir = join("plugins", plugin);
+const pluginDir = plugin.match(/(\\|\/)/) ? plugin : join("plugins", plugin);
 const entry = readdirSync(pluginDir).find(file => file.startsWith("index."));
 const entryPath = join(pluginDir, entry);
 
