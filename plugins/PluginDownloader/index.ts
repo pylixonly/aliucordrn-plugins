@@ -62,6 +62,22 @@ export default class PluginDownloader extends Plugin {
         }
 
         const plugin = this.loadPlugin(name + ".zip");
+        if (!plugin) return;
+
+        try {
+            this.logger.info(`Starting plugin ${plugin}`);
+            await plugin.start();
+            // @ts-ignore
+            plugin.enabled = true;
+        } catch (err: any) {
+            // @ts-ignore
+            plugin.errors.push(err?.stack ?? err);
+            this.logger.error(`Failed while starting plugin: ${name}`, err);
+            Toasts.open({
+                content: `${name} had an error while starting.`,
+                source: getAssetId("Small")
+            });
+        }
     }
 
     // modified from aliucord repo since it is not exported
