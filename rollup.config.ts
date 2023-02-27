@@ -23,7 +23,7 @@ export default defineConfig({
     plugins: [
         aliucordPlugin({
             autoDeploy: !!process.env.ROLLUP_WATCH,
-            packageName: "com.aliucord"
+            packageName: process.env.packageName || "com.aliucord"
         }),
         makeManifest({
             baseManifest: "baseManifest.json",

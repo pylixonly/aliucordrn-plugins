@@ -19,7 +19,7 @@ const plugin = args.find(arg => !arg.startsWith("--"));
 
 if (!plugin) {
     console.error("ERROR: No plugin specified");
-    console.error("Usage: npm run build <plugin> [--watch] [--package=<package-name>]");
+    console.error("Usage: pnpm build <plugin> [--watch] [--package=<package-name>]");
     exit(1);
 }
 
