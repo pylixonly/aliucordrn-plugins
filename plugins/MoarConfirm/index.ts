@@ -1,6 +1,5 @@
 import { Plugin } from "aliucord/entities";
 
-// @ts-ignore
 import { Dialog, getByProps } from "aliucord/metro";
 
 export default class MoarConfirm extends Plugin {

@@ -1,5 +1,4 @@
 import { Patcher } from "aliucord/api";
-// @ts-ignore
 import { Constants, getByProps, getByStoreName, Toasts } from "aliucord/metro";
 import EmoteGrabber from ".";
 
@@ -35,7 +34,7 @@ const onGuildPress = async (emojiNode, guild) => {
                 content: `Failed to clone :${emojiNode.alt}: to ${guild.name}`,
                 source: { uri: emojiNode.src }
             });
-            
+
             EmoteGrabber.instance.logger.error("Failed to clone emote", e)
             throw e;
         }

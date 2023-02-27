@@ -1,5 +1,4 @@
 import { Plugin } from "aliucord/entities";
-// @ts-ignore
 import { Forms, getByProps, React } from "aliucord/metro";
 import { Fragment } from "react";
 import { patch } from "./ClonerActionSheet";

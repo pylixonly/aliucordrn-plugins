@@ -13,8 +13,6 @@ import { patchUI } from "./pages/patches";
 import RichPresenceSettings from "./pages/RichPresenceSettings";
 import RichPresenceSetupPage from "./pages/RichPresenceSetupPage";
 
-declare const aliucord: any;
-
 export default class RichPresence extends Plugin {
     static classInstance: RichPresence;
 

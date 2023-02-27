@@ -1,4 +1,3 @@
-// @ts-ignore
 import { getByName } from "aliucord/metro";
 import { Plugin } from "aliucord/entities"
 

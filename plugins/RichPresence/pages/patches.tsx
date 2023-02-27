@@ -2,11 +2,6 @@ import { Forms, React, getByName, getByProps } from "aliucord/metro";
 import { findInReactTree, getAssetId } from "aliucord/utils";
 import RichPresence from "..";
 
-declare const aliucord: any;
-declare module "aliucord/metro" {
-    export function getByName(name: string, options?: any): any;
-}
-
 export const patchUI = (plugin) => {
     const { FormRow } = Forms;
 

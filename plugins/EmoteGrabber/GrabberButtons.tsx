@@ -1,4 +1,3 @@
-// @ts-ignore
 import { getByProps, React, Styles, Toasts } from "aliucord/metro";
 import { getAssetId } from "aliucord/utils";
 import { openClonerActionSheet } from "./ClonerActionSheet";
@@ -14,11 +13,11 @@ const styles = Styles.createThemedStyleSheet({
 export const GrabberButtons = ({ emojiNode }: any) => {
     return <>
         <Button
-            text='Clone to another server' 
-            style={styles.button} 
+            text='Clone to another server'
+            style={styles.button}
             color='brand'
             size='small'
-            onPress={() => openClonerActionSheet(emojiNode)} 
+            onPress={() => openClonerActionSheet(emojiNode)}
         />
         <Button
             text='Copy URL to clipboard'
