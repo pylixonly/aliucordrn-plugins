@@ -7,7 +7,7 @@ import { constants, getAssetId } from "aliucord/utils";
 const SimpleActionSheetUtils = getByProps("showSimpleActionSheet");
 const ActionSheetUtils = getByProps("hideActionSheet");
 
-export default class PluginDownloaderReborn extends Plugin {
+export default class PluginDownloader extends Plugin {
     public start() {
         this.patcher.before(SimpleActionSheetUtils, "showSimpleActionSheet", ({ args: [info] }) => {
             if (info?.key !== "LongPressUrl") return;
@@ -16,7 +16,7 @@ export default class PluginDownloaderReborn extends Plugin {
             if (!repo) return;
 
             info.options.unshift({
-                label: "Install plugin",
+                label: "Install a plugin",
                 onPress: async () => {
                     ActionSheetUtils.hideActionSheet();
                     let plugins;
@@ -61,8 +61,7 @@ export default class PluginDownloaderReborn extends Plugin {
             await pluginManager.disablePlugin(name);
         }
 
-        this.loadPlugin(name + ".zip");
-        await pluginManager.enablePlugin(name);
+        const plugin = this.loadPlugin(name + ".zip");
     }
 
     // modified from aliucord repo since it is not exported

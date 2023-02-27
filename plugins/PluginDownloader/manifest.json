@@ -1,0 +1,5 @@
+{
+    "name": "PluginDownloader",
+    "description": "(Temporary plugin) Install plugins in-app by holding the link.",
+    "version": "0.1.0"
+}
