@@ -8,7 +8,6 @@ export default class MoarConfirm extends Plugin {
         const CallManager = getByProps("handleStartCall");
 
         if (!Dialog) {
-            // @ts-ignore
             throw new Error("window.Aliucord.metro.Dialog is null, cannot continue.");
         }
 
@@ -38,8 +37,5 @@ export default class MoarConfirm extends Plugin {
             // patcher.instead is borked at this moment of writing
             return true;
         });
-    }
-
-    public stop() {
     }
 }

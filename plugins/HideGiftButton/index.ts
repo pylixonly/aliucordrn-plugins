@@ -10,10 +10,7 @@ export default class HideGiftButton extends Plugin {
 
             this.patcher.before(ChatInput.default.prototype, "render", (x) => {
                 x.thisObject.props.hideGiftButton = true;
-            }) 
+            })
         })();
-    }
-
-    public stop() {
     }
 }
