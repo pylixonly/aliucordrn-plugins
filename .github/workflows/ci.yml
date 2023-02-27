@@ -23,11 +23,7 @@ jobs:
               run: pnpm install
 
             - name: Build plugins
-              run: |
-                  mkdir dist
-                  for plugin in $(find . -type f -name manifest.json -exec dirname {} \; | cut -c3-); do
-                    node build.mjs "$plugin"
-                  done
+              run: pnpm buildAll
 
             - name: Upload dist folder as artifact
               uses: actions/upload-artifact@v3

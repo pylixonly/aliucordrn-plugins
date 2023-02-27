@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node build.mjs",
     "watch": "node build.mjs --watch",
-    "deploy": "node build.mjs --deploy"
+    "buildAll": "for /d %i in (plugins/*) do pnpm build %i"
   },
   "devDependencies": {
     "@aliucord/hermesc": "^0.70.6-aliucord-2",

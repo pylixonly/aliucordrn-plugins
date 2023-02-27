@@ -39,11 +39,6 @@ Build Plugin:
 pnpm build [PLUGIN_NAME]
 ```
 
-Build and deploy only*:
-```sh
-pnpm build --deploy [PLUGIN_NAME] <PACKAGE_NAME>
-```
-
 Watch for changes and auto compile & deploy* :
 ```sh
 pnpm watch [PLUGIN_NAME]
