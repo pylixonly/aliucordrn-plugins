@@ -5,16 +5,25 @@
 > AliucordRN is not yet finished, therefore these plugins may break anytime due to breaking changes. These plugins has to be installed manually.
 
 ### [RichPresence](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/RichPresence.zip)
-Allows you to set your Discord Rich Presence based on your last.fm or your custom settings
+Allows you to set your Discord Rich Presence based on your last.fm or your custom settings.
+
+### [VendettaLoader](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/VendettaLoader.zip)
+Loads [Vendetta](https://github.com/vendetta-mod/Vendetta) as an AliucordRN plugin.
+
+### [PluginDownloader](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/PluginDownloader.zip)
+A temporary plugin that downloads and installs AliucordRN plugins.
+
+### [MoarConfirm](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/MoarConfirm.zip)
+Prompt confirmations for irreversible actions before you regret.
 
 ### [NoIdle](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/NoIdle.zip)
-Don't idle when Discord is running in the background
+Don't idle when Discord is running in the background.
 
 ### [HideGiftButton](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/HideGiftButton.zip)
-Hides the gift button next to chat input
+Hides the gift button next to chat input.
 
-### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip)
-Grab emote's link or clone them to your server.\
+### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip) (currently half broken)
+Grab emote's link or clone them to your server. Currently can't clone emotes.\
 Huge thanks to Fiery (from his Enmity's [@FierysDiscordAddons/Stealmoji](https://github.com/FierysDiscordAddons/Stealmoji) plugin)
 
 <details>
