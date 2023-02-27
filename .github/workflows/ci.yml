@@ -23,7 +23,7 @@ jobs:
               run: pnpm install
 
             - name: Build plugins
-              run: pnpm buildAll
+              run: pnpm buildAll:linux
 
             - name: Upload dist folder as artifact
               uses: actions/upload-artifact@v3
