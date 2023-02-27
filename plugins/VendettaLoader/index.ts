@@ -43,13 +43,13 @@ export default class VendettaLoader extends Plugin {
             }
         }
 
-        this.logger.info("Injecting Vendetta");
-        this.inject();
-
         if (!this.loaderConfig.customLoadUrl?.enabled && await this.isUpdateAvailable()) {
             AliuFS.remove(this.INSTALL_PATH);
             await this.download();
         }
+
+        this.logger.info("Injecting Vendetta");
+        this.inject();
     }
 
     public async stop() {
