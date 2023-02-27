@@ -124,6 +124,7 @@ export default class RichPresence extends Plugin {
     }
 
     public stop() {
+        super.stop();
         this.lfmClient?.clear();
         this.rpcClient.clearRPC();
     }

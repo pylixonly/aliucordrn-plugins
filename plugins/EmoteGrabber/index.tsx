@@ -57,7 +57,4 @@ export default class EmoteGrabber extends Plugin {
             });
         });
     }
-
-    public stop() {
-    }
 }
