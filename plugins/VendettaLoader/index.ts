@@ -61,14 +61,19 @@ export default class VendettaLoader extends Plugin {
         window.__vendetta_loader = {
             name: "VendettaLoader (AliucordRN)",
             features: {
-                loaderConfig: true
-            }
+                loaderConfig: true,
+                devtools: {
+                    prop: "__vendetta_rdc",
+                    version: "4.27.2"
+                }
+            },
         };
 
         const { DocumentsDirPath } = nativeModuleProxy.DCDFileManager.getConstants();
         const configPath = DocumentsDirPath + "/vendetta_loader.json";
 
-        if (!AliuFS.exists(configPath)) {
+        const file = AliuFS.readFile(configPath, "text") as string;
+        if (!AliuFS.exists(configPath) || !file || file === "{}") {
             AliuFS.writeFile(configPath, JSON.stringify({
                 customLoadUrl: {
                     enabled: false,
@@ -77,7 +82,7 @@ export default class VendettaLoader extends Plugin {
             }));
         }
 
-        this.loaderConfig = JSON.parse(AliuFS.readFile(configPath, "text") as string);
+        this.loaderConfig = JSON.parse(file);
     }
 
     inject() {
