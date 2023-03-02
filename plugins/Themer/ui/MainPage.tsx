@@ -18,7 +18,7 @@ export default function MainPage() {
                     onPress={() => navigation.push("SemanticColorsPage")}
                 />
                 <FormRow
-                    label="Row Colors"
+                    label="Raw Colors"
                     subLabel="View all raw colors."
                     leading={<FormIcon source={getAssetId("ic_theme_24px")} />}
                     trailing={FormRow.Arrow}

@@ -2,6 +2,7 @@ import { Forms, getByName, getModule, NavigationNative, React } from "aliucord/m
 import { findInReactTree } from "aliucord/utils";
 import { useCallback, useEffect } from "react";
 import { View } from "react-native";
+import { normalizeColorToHex } from "../../utils";
 import PageSave from "../components/PageSave";
 
 type ColorType = string | number;
@@ -21,9 +22,11 @@ function useColorPicker(initColor: ColorType): [ColorType, any, any] {
         onSelect: console.log,
     });
 
-    const finalColor = findInReactTree(actionSheet, x => x?.type?.name === "SuggestedColors").props.color;
-    const colorPicker = findInReactTree(actionSheet, x => x?.type?.name === "HSVColorPicker");
-    const textInput = findInReactTree(actionSheet, x => x?.props?.onChangeText);
+    const view = findInReactTree(actionSheet, x => x?.type?.name === "SafeAreaPaddingView");
+
+    const finalColor = findInReactTree(view, x => x?.type?.name === "SuggestedColors").props.color;
+    const colorPicker = findInReactTree(view, x => x?.type?.name === "HSVColorPicker");
+    const textInput = findInReactTree(view, x => x?.props?.onChangeText);
 
     return [finalColor, colorPicker, textInput];
 }
@@ -32,7 +35,7 @@ function ColorPreview({ color }: { color: ColorType }) {
     const styles = ({
         height: 50,
         borderRadius: 8,
-        backgroundColor: "#" + color.toString(16).padStart(6, "0")
+        backgroundColor: normalizeColorToHex(color)
     });
 
     return <View style={styles} />;

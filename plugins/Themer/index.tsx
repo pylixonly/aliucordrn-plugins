@@ -5,9 +5,15 @@ import MainPage from "./ui/MainPage";
 import ColorPickerPage from "./ui/pages/ColorPickerPage";
 import RawColorsPage from "./ui/pages/RawColorsPage";
 import SemanticColorsPage from "./ui/pages/SemanticColorsPage";
-import { reloadColor } from "./utils";
+import { getColorMap, reloadColor } from "./utils";
 
 export default class Themer extends Plugin {
+    static origColorMap = {
+        dark: getColorMap("dark"),
+        light: getColorMap("light"),
+        amoled: getColorMap("amoled"),
+    };
+
     start() {
         // findByDisplayName("HSVColorPicker")
         // this.logger.info("Hello from Themer!");
