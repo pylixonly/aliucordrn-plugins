@@ -33,16 +33,16 @@ export default class EmoteGrabber extends Plugin {
                             if (!last || last.key !== "emoteGrabber") {
                                 component.props.children.push(<Fragment key="emoteGrabber" />);
 
-                                const buttonView = component.props?.children[3]?.props?.children
+                                const buttonView = component.props?.children[3]?.props?.children;
                                 if (buttonView) {
-                                    buttonView.push(<GrabberButtons emojiNode={emojiNode} />)
+                                    buttonView.push(<GrabberButtons emojiNode={emojiNode} />);
                                     return;
                                 }
 
                                 const unjoinedButtonView = component.props?.children.findIndex(x => x?.type?.name === "Button");
 
                                 if (unjoinedButtonView !== -1) {
-                                    component.props?.children?.splice(unjoinedButtonView + 1, 0, <GrabberButtons emojiNode={emojiNode} />)
+                                    component.props?.children?.splice(unjoinedButtonView + 1, 0, <GrabberButtons emojiNode={emojiNode} />);
                                     return;
                                 }
 

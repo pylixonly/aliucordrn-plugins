@@ -9,12 +9,12 @@ const { handler } = SET_ACTIVITY;
 export default class RPCClient {
     private lastActivityType: ActivityTypes = ActivityTypes.GAME;
 
-    private replaceHostname(url: string) { 
-        return url.replace(/^(mp:)?(https?:\/\/)?([^\/]+\.)?discordapp\.(com|net)\/(.*)$/i, 'mp:$5');
+    private replaceHostname(url: string) {
+        return url.replace(/^(mp:)?(https?:\/\/)?([^/]+\.)?discordapp\.(com|net)\/(.*)$/i, "mp:$5");
     }
 
     public patchFilter(patcher: Patcher) {
-        patcher.before(FluxDispatcher, 'dispatch', (_, { type, activity }: { type: string, activity: Activity }) => {
+        patcher.before(FluxDispatcher, "dispatch", (_, { type, activity }: { type: string, activity: Activity }) => {
             if (type === "LOCAL_ACTIVITY_UPDATE" && !!activity) {
                 activity.type = this.lastActivityType;
                 this.lastActivityType = ActivityTypes.GAME;
@@ -32,14 +32,14 @@ export default class RPCClient {
 
     public async sendRPC(activity: Activity): Promise<any> {
         // Remove empty properties/arrays
-        Object.keys(activity).forEach((k) => activity[k] === undefined 
-                                            || activity[k].length === 0
-                                            && delete activity[k]);
+        Object.keys(activity).forEach((k) => activity[k] === undefined
+            || activity[k].length === 0
+            && delete activity[k]);
 
         if (activity.assets) {
-            Object.keys(activity.assets).forEach((k) => activity.assets![k] === undefined 
-                                                        || activity.assets![k].length === 0
-                                                        && delete activity.assets![k]);
+            Object.keys(activity.assets).forEach((k) => activity.assets![k] === undefined
+                || activity.assets![k].length === 0
+                && delete activity.assets![k]);
         }
 
         this.lastActivityType = activity.type ?? ActivityTypes.GAME;

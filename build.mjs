@@ -1,8 +1,7 @@
-import { spawnSync, execSync } from "child_process";
-import { platform } from "process";
+import { execSync, spawnSync } from "child_process";
 import { existsSync, readdirSync } from "fs";
 import { join } from "path";
-import { argv, cwd, exit } from "process";
+import { argv, cwd, exit, platform } from "process";
 
 // get all arguments
 const args = argv.slice(2);
@@ -10,7 +9,7 @@ const args = argv.slice(2);
 if (args.includes("--all")) {
     const plugins = readdirSync("plugins").filter(file => existsSync(join("plugins", file, "manifest.json")));
     for (const plugin of plugins) {
-        execSync(`pnpm build ${plugin}`, { stdio: "inherit" })
+        execSync(`pnpm build ${plugin}`, { stdio: "inherit" });
     }
     exit(0);
 }
@@ -46,5 +45,5 @@ const proc = spawnSync(rollupExec, rollupArgs, {
 });
 
 if (proc.error) {
-    console.error(proc.error)
+    console.error(proc.error);
 }

@@ -21,9 +21,9 @@ export const patchUI = (plugin) => {
                     trailing={FormRow.Arrow}
                     onPress={() => Navigation.push(RichPresence.classInstance.SettingsModal)}
                 />
-            </>)
+            </>);
         });
 
         unpatch();
     });
-}
+};

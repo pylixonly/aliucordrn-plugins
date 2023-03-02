@@ -19,7 +19,7 @@ const onGuildPress = async (emojiNode, guild) => {
         try {
             const dataUrl = reader.result;
 
-            const response = await EmojiModule.uploadEmoji({
+            await EmojiModule.uploadEmoji({
                 guildId: guild.id,
                 image: dataUrl,
                 name: emojiNode.alt
@@ -35,7 +35,7 @@ const onGuildPress = async (emojiNode, guild) => {
                 source: { uri: emojiNode.src }
             });
 
-            EmoteGrabber.instance.logger.error("Failed to clone emote", e)
+            EmoteGrabber.instance.logger.error("Failed to clone emote", e);
             throw e;
         }
     };
@@ -46,10 +46,10 @@ const onGuildPress = async (emojiNode, guild) => {
 export const openClonerActionSheet = (args) => GuildInvite.showGuildInviteActionSheet(uniqueIdentifier, args);
 
 export const patch = (patcher: Patcher) => {
-    patcher.after(GuildInvite, "useServerInviteRows", ({ args: [recipient] }, x: any, __) => {
+    patcher.after(GuildInvite, "useServerInviteRows", ({ args: [recipient] }, x: any) => {
         if (recipient !== uniqueIdentifier) return;
 
-        const [_ownServer, otherServers] = x;
+        const [, otherServers] = x;
         x[1] = otherServers.filter(x => x && PermissionStore.can(Permissions.MANAGE_GUILD_EXPRESSIONS, x.guild));
     });
 
@@ -91,7 +91,7 @@ export const patch = (patcher: Patcher) => {
                     });
                     unpatch();
                 });
-            })
+            });
         });
     });
-}
+};

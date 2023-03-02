@@ -1,10 +1,10 @@
-import { RPLogger } from "../utils/Logger";
 import { Track, YoutubeTrack } from "../types/Track";
+import { RPLogger } from "../utils/Logger";
 
 export default class YoutubeClient {
     apiUrl: string;
-    
-    constructor(apiUrl = 'https://yt.lemnoslife.com/noKey', apiKey?) {
+
+    constructor(apiUrl = "https://yt.lemnoslife.com/noKey") {
         this.apiUrl = apiUrl;
     }
 
@@ -13,14 +13,14 @@ export default class YoutubeClient {
             ...track,
             albumArt: yt.albumArt,
             ytUrl: `https://music.youtube.com/watch?v=${yt.videoId}`
-        }
+        };
     }
 
     async findYoutubeEquivalent(track: Track): Promise<YoutubeTrack | null> {
         const searchParam = `${track.artist} - "${track.name}" on ${track.album}`;
-        
+
         RPLogger.info(`Begin searching for ${searchParam} on Youtube...`);
-        const search = await fetch(`${this.apiUrl}/search?part=snippet&q=${searchParam} "Provided to Youtube by"`)
+        const search = await fetch(`${this.apiUrl}/search?part=snippet&q=${searchParam} "Provided to Youtube by"`);
         const results = await search.json();
 
         if (results.items.length === 0) {
@@ -32,7 +32,7 @@ export default class YoutubeClient {
 
         for (const result of results.items) {
             // check if the track name matches, whitespaces are removed
-            if (track.name.replace(/\s/g, '') !== result.snippet.title.replace(/\s/g, '').replace(/&quot;/g, '"')) {
+            if (track.name.replace(/\s/g, "") !== result.snippet.title.replace(/\s/g, "").replace(/&quot;/g, "\"")) {
                 RPLogger.info(`Track name mismatch: ${track.name} ≠ ${result.snippet.title}`);
                 continue;
             }

@@ -1,5 +1,5 @@
-import { getByProps, MessageStore, ReactNative } from "aliucord/metro";
-import { Plugin } from "aliucord/entities"
+import { Plugin } from "aliucord/entities";
+import { getByProps, ReactNative } from "aliucord/metro";
 
 const { DCDChatManager } = ReactNative.NativeModules;
 const UserStore = getByProps("getUser");
@@ -31,7 +31,7 @@ const PronounMapping = {
 export default class PronounDB extends Plugin {
     pronounMap = {};
 
-    isFetching: boolean = false;
+    isFetching = false;
     queue: string[] = [];
 
     public async fetchPronoun(id: string) {

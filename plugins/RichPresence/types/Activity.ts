@@ -4,8 +4,8 @@ export interface Activity {
     state?: string;
     details: string;
     timestamps?: {
-        start?: Number;
-        end?: Number;
+        start?: number;
+        end?: number;
     },
     assets?: {
         large_image?: string;

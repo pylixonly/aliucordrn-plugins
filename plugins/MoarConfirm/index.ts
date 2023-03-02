@@ -30,7 +30,7 @@ export default class MoarConfirm extends Plugin {
                         this.logger.error("Failed to start call", e);
                     }
                 },
-            })
+            });
 
             // return true to prevent the original method from being called
             // patcher.instead is borked at this moment of writing

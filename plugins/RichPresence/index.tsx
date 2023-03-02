@@ -32,7 +32,7 @@ export default class RichPresence extends Plugin {
         this.logger.info("Starting RPC...");
 
         switch (RichPresenceConfig.mode) {
-            case "custom":
+            case "custom": {
                 const settings = RichPresenceConfig.custom;
                 this.logger.info("Starting user-set RPC...");
 
@@ -56,9 +56,9 @@ export default class RichPresence extends Plugin {
                     ...(largeImage || smallImage ? {
                         assets: {
                             large_image: largeImage,
-                            large_text: !!largeImage ? settings.get("large_image_text") : undefined,
+                            large_text: largeImage ? settings.get("large_image_text") : undefined,
                             small_image: settings.get("small_image"),
-                            small_text: !!largeImage ? settings.get("small_image_text") : undefined
+                            small_text: largeImage ? settings.get("small_image_text") : undefined
                         }
                     } : {}),
                     buttons: [
@@ -68,6 +68,7 @@ export default class RichPresence extends Plugin {
                 });
                 this.logger.info("Started user-set RPC. SET_ACTIVITY: ", request);
                 break;
+            }
             case "lastfm":
                 this.logger.info("Streaming last.fm...");
 
@@ -98,9 +99,10 @@ export default class RichPresence extends Plugin {
                     (get("show_toast") ?? true) && Toasts.open({ content: `Now playing: ${track.name}` });
                 });
                 break;
-            case "none":
+            case "none": {
                 const err = "RPC mode is set to none while it's enabled";
                 throw new Error(err);
+            }
         }
     }
 

@@ -9,6 +9,7 @@ declare global {
 
     const AliuHermes: {
         run: (path: string, buffer?: ArrayBuffer) => any;
+        // eslint-disable-next-line @typescript-eslint/ban-types
         findStrings: (fun: Function) => string[];
         unfreeze: (obj: any) => any;
     };
@@ -37,7 +38,7 @@ declare global {
         };
 
         DCDFileManager: any;
-    }
+    };
 
     class ZipFile {
         constructor(path: string, level: number, mode: "w" | "r" | "a" | "d");
@@ -52,19 +53,23 @@ declare global {
 }
 
 // temporary while we wait for the aliucord typings to update
-declare module 'aliucord' {
-    module metro {
+declare module "aliucord" {
+    namespace metro {
         export function getByName(name: string, options?: { [key: PropertyKey]: boolean }): any;
 
         // Common modules
         export const Toasts: any;
         export const Navigation: any;
+        export const NavigationNative: any;
         export const DiscordNavigator: any;
         export const Dialog: any;
+
+        export const ThemeStore: any;
+        export const UnsyncedUserSettingsStore: any;
     }
 
-    module utils {
-        module constants {
+    namespace utils {
+        namespace constants {
             export const PLUGINS_DIRECTORY: string;
             export const ALIUCORD_DIRECTORY: string;
         }
@@ -73,4 +78,5 @@ declare module 'aliucord' {
     export const pluginManager: typeof import("aliucord/api/PluginManager").PluginManager | any;
 }
 
-export { }
+export { };
+

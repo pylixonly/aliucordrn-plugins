@@ -9,24 +9,24 @@ export const defaults = {
 };
 
 export const settings = {
-    get enabled() { return settingsInstance().get("enabled", false) },
-    get mode() { return settingsInstance().get("mode", "none") },
-    get applicationId() { return settingsInstance().get("appID", "") || defaults.discord_application_id },
+    get enabled() { return settingsInstance().get("enabled", false); },
+    get mode() { return settingsInstance().get("mode", "none"); },
+    get applicationId() { return settingsInstance().get("appID", "") || defaults.discord_application_id; },
 
     lastFm: {
-        get enabled() { return settingsInstance().get("mode", "none") === "lastfm" },
+        get enabled() { return settingsInstance().get("mode", "none") === "lastfm"; },
         get(name) {
             return settingsInstance().get("lastfm", {})[name];
         }
     },
 
     custom: {
-        get enabled() { return settingsInstance().get("mode", "none") === "lastfm" },
+        get enabled() { return settingsInstance().get("mode", "none") === "lastfm"; },
         get(name: string, defaultValue?: any) {
             return settingsInstance().get("customRpc", {})[name] || defaultValue;
         }
     }
-}
+};
 
 export const useSettings = (name?: string) => {
     const [, forceUpdate] = React.useReducer(x => x + 1, 0);
@@ -48,4 +48,4 @@ export const useSettings = (name?: string) => {
             forceUpdate();
         }
     };
-}
+};

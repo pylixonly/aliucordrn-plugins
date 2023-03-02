@@ -19,7 +19,7 @@ export default class LastFMClient {
     setUsername(username: string) {
         if (!username) {
             this.logger.error(`[instance: ${this.apiKey}] Username is empty`);
-            throw new Error('Username is empty');
+            throw new Error("Username is empty");
         }
         this.username = username;
         return this;
@@ -55,20 +55,20 @@ export default class LastFMClient {
     clear() {
         this.updateInterval && clearInterval(this.updateInterval);
     }
-    
+
     async fetchCurrentScrobble() {
         if (!this.username) {
             this.logger.error(`[instance: ${this.apiKey}] No username set`);
-            throw new Error('No username set');
+            throw new Error("No username set");
         }
 
         const params = new URLSearchParams({
-            'method': 'user.getrecenttracks',
-            'user': this.username,
-            'api_key': this.apiKey,
-            'format': 'json',
-            'limit': '1',
-            'extended': '1'
+            "method": "user.getrecenttracks",
+            "user": this.username,
+            "api_key": this.apiKey,
+            "format": "json",
+            "limit": "1",
+            "extended": "1"
         }).toString();
 
         const response = await fetch(`https://ws.audioscrobbler.com/2.0/?${params}`).then(x => x.json());
@@ -81,18 +81,18 @@ export default class LastFMClient {
         return {
             name: track.name,
             artist: track.artist.name,
-            album: track.album['#text'],
-            albumArt: this.polishAlbumArt(track.image[3]['#text']),
+            album: track.album["#text"],
+            albumArt: this.polishAlbumArt(track.image[3]["#text"]),
             url: track.url,
-            date: track.date?.['#text'] ?? 'now',
-            nowPlaying: Boolean(track['@attr']?.nowplaying),
-            loved: track.loved === '1',
-        }
+            date: track.date?.["#text"] ?? "now",
+            nowPlaying: Boolean(track["@attr"]?.nowplaying),
+            loved: track.loved === "1",
+        };
     }
 
-    mapToRPC(track : Track): Activity {
+    mapToRPC(track: Track): Activity {
         return {
-            name: 'Music',
+            name: "Music",
             type: RichPresenceSettings.lastFm.get("listening_to") ? ActivityTypes.LISTENING : ActivityTypes.GAME,
             details: track.name,
             state: `by ${track.artist}`,
@@ -101,15 +101,17 @@ export default class LastFMClient {
                     large_image: track.albumArt,
                     large_text: `on ${track.album}`,
                     ...(track.loved && RichPresenceSettings.lastFm.get("add_loved_icon") ? {
-                        small_image: 'loved',
-                        small_text: 'Loved' 
+                        small_image: "loved",
+                        small_text: "Loved"
                     } : {})
                 }
             } : {}),
-            ...(RichPresenceSettings.lastFm.get("add_ytm_button") ?  { buttons: [
-                { label: 'Listen on Youtube Music', url: track.ytUrl }
-            ]} : {}),
-        }
+            ...(RichPresenceSettings.lastFm.get("add_ytm_button") ? {
+                buttons: [
+                    { label: "Listen on Youtube Music", url: track.ytUrl }
+                ]
+            } : {}),
+        };
     }
 
     polishAlbumArt(albumArt) {
@@ -117,11 +119,11 @@ export default class LastFMClient {
             "2a96cbd8b46e442fc41c2b86b821562f",
             "c6f59c1e5e7240a4c0d427abd71f3dbb",
         ];
-    
+
         if (defaultCoverHashes.some(x => albumArt.includes(x))) {
             return undefined;
         }
-        
+
         return albumArt;
     }
 }

@@ -1,4 +1,4 @@
-import { Forms, React, ReactNative, Styles, Constants, URLOpener, getByProps } from "aliucord/metro";
+import { Constants, Forms, getByProps, React, ReactNative, Styles, URLOpener } from "aliucord/metro";
 import { useSettings } from "../utils/Settings";
 
 const { FormSection, FormInput, FormRow, FormSwitch } = Forms;
@@ -24,7 +24,6 @@ export default function RichPresenceSetupPage() {
     const { get, set } = useSettings("customRpc");
 
     return (<>
-        {/*// @ts-ignore */}
         <ScrollView>
             <FormSection title="Basic">
                 <FormInput
@@ -73,18 +72,14 @@ export default function RichPresenceSetupPage() {
                     disabled={!get("small_image", false)}
                     onChange={v => set("small_image_text", v)}
                 />
-                {/* @ts-ignore */}
                 <Text style={styles.subText}>
                     Image assets key can be either a Discord asset name or a URL to an image.
                 </Text>
             </FormSection>
             <FormSection title="Timestamps">
-                {/* @ts-ignore */}
                 <Text style={styles.subText}>
-                    {/* @ts-ignore */}
                     Timestamps are in Epoch seconds. You may use <Text style={styles.textLink} onPress={() => URLOpener.openURL("https://www.epochconverter.com/")}>this</Text> to convert your time to Unix Epoch time.
                 </Text>
-                {/* @ts-ignore */}
                 <View style={{ height: 12 }} />
                 <FormRow
                     label="Enable timestamps"
@@ -117,7 +112,6 @@ export default function RichPresenceSetupPage() {
                     }}
                     trailing={FormRow.Arrow}
                 />
-                {/* @ts-ignore */}
                 <Text style={styles.subText}>
                     NOTE: Leaving start timestamp blank will use the time RPC started.
                 </Text>

@@ -1,5 +1,5 @@
+import { Plugin } from "aliucord/entities";
 import { getByName } from "aliucord/metro";
-import { Plugin } from "aliucord/entities"
 
 export default class HideGiftButton extends Plugin {
     public start() {
@@ -9,7 +9,7 @@ export default class HideGiftButton extends Plugin {
 
             this.patcher.before(ChatInput.default.prototype, "render", (x) => {
                 x.thisObject.props.hideGiftButton = true;
-            })
+            });
         })();
     }
 }

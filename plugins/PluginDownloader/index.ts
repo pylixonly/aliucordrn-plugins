@@ -1,6 +1,5 @@
 import { pluginManager } from "aliucord";
 import { Plugin } from "aliucord/entities";
-import { PluginManifest } from "aliucord/entities/types";
 import { Dialog, getByProps, Toasts } from "aliucord/metro";
 import { constants, getAssetId } from "aliucord/utils";
 
@@ -143,7 +142,7 @@ export default class PluginDownloader extends Plugin {
     }
 
     async getPlugins(repo: string): Promise<{ name: string, url: string }[]> {
-        const res = await fetch(`https://api.github.com/repos/${repo}/git/trees/builds`)
+        const res = await fetch(`https://api.github.com/repos/${repo}/git/trees/builds`);
 
         if (!res.ok) {
             this.logger.error("Failed to fetch plugins, response code: " + res.status);
@@ -172,13 +171,13 @@ export default class PluginDownloader extends Plugin {
             Dialog.show({
                 title: "Reinstall plugin?",
                 body: `${name} is already installed.`,
-                confirmText: 'Yes',
-                cancelText: 'No',
+                confirmText: "Yes",
+                cancelText: "No",
                 isDismissable: true,
                 onConfirm: () => res(true),
                 onCancel: () => rej(false),
                 onDismiss: () => rej(false)
-            })
+            });
         });
     }
 }

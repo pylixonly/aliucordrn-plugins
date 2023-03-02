@@ -11,6 +11,6 @@ export default class NoIdle extends Plugin {
             }
 
             event.idle = false;
-        })
+        });
     }
 }

@@ -30,5 +30,5 @@ export const GrabberButtons = ({ emojiNode }: any) => {
                 LazyActionSheet.hideActionSheet("MessageEmojiActionSheet");
             }}
         />
-    </>
-}
+    </>;
+};

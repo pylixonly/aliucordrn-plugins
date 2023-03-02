@@ -91,7 +91,7 @@ export default class VendettaLoader extends Plugin {
         } catch (err) {
             this.logger.error("Failed to unload Vendetta");
             this.logger.error(err);
-            delete window.vendetta
+            delete window.vendetta;
         }
 
         const decoder = new TextDecoder("utf-8");
