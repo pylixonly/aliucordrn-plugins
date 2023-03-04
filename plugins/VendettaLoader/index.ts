@@ -8,7 +8,7 @@ export default class VendettaLoader extends Plugin {
             enabled: boolean;
             url: string;
         };
-        loadReactDevTools: boolean;
+        loadReactDevTools?: boolean;
     };
 
     INSTALL_PATH = constants.ALIUCORD_DIRECTORY + "vendetta.js";
@@ -61,28 +61,30 @@ export default class VendettaLoader extends Plugin {
         window.__vendetta_loader = {
             name: "VendettaLoader (AliucordRN)",
             features: {
-                loaderConfig: true,
-                devtools: {
-                    prop: "__vendetta_rdc",
-                    version: "4.27.2"
-                }
+                loaderConfig: true
             },
         };
 
         const { DocumentsDirPath } = nativeModuleProxy.DCDFileManager.getConstants();
         const configPath = DocumentsDirPath + "/vendetta_loader.json";
 
-        const file = AliuFS.readFile(configPath, "text") as string;
-        if (!AliuFS.exists(configPath) || !file || file === "{}") {
-            AliuFS.writeFile(configPath, JSON.stringify({
+        try {
+            const file = AliuFS.exists(configPath) && AliuFS.readFile(configPath, "text") as string;
+            if (typeof file !== "string") {
+                throw new Error("Not a string");
+            }
+
+            this.loaderConfig = JSON.parse(file);
+        } catch {
+            this.loaderConfig = {
                 customLoadUrl: {
                     enabled: false,
                     url: "http://localhost:4040/vendetta.js"
                 }
-            }));
+            };
         }
 
-        this.loaderConfig = JSON.parse(file);
+        AliuFS.writeFile(configPath, JSON.stringify(this.loaderConfig));
     }
 
     inject() {
