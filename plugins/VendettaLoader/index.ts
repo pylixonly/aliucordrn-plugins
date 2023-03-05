@@ -70,8 +70,8 @@ export default class VendettaLoader extends Plugin {
 
         try {
             const file = AliuFS.exists(configPath) && AliuFS.readFile(configPath, "text") as string;
-            if (typeof file !== "string") {
-                throw new Error("Not a string");
+            if (typeof file !== "string" || file === "{}") {
+                throw new Error();
             }
 
             this.loaderConfig = JSON.parse(file);
