@@ -38,6 +38,7 @@ declare global {
         };
 
         DCDFileManager: any;
+        InfoDictionaryManager: any;
     };
 
     class ZipFile {
