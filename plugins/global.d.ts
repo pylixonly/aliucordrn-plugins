@@ -64,6 +64,7 @@ declare module "aliucord" {
         export const NavigationNative: any;
         export const DiscordNavigator: any;
         export const Dialog: any;
+        export const Locale: any;
 
         export const ThemeStore: any;
         export const UnsyncedUserSettingsStore: any;

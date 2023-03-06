@@ -1,4 +1,4 @@
-import { getByProps, React, Styles, Toasts } from "aliucord/metro";
+import { getByProps, React, Toasts } from "aliucord/metro";
 import { getAssetId } from "aliucord/utils";
 import { openClonerActionSheet } from "./ClonerActionSheet";
 
@@ -6,22 +6,18 @@ const Button = getByProps("ButtonColors", "ButtonLooks", "ButtonSizes").default 
 const Clipboard = getByProps("setString");
 const LazyActionSheet = getByProps("openLazy", "hideActionSheet");
 
-const styles = Styles.createThemedStyleSheet({
-    button: { marginTop: 12 }
-});
-
 export const GrabberButtons = ({ emojiNode }: any) => {
     return <>
         <Button
             text='Clone to another server'
-            style={styles.button}
+            style={{ marginTop: 12 }}
             color='brand'
             size='small'
             onPress={() => openClonerActionSheet(emojiNode)}
         />
         <Button
             text='Copy URL to clipboard'
-            style={styles.button}
+            style={{ marginTop: 12 }}
             color='brand'
             size='small'
             onPress={() => {

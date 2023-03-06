@@ -1,59 +1,36 @@
 import { Plugin } from "aliucord/entities";
-import { Forms, getByProps, React } from "aliucord/metro";
-import { Fragment } from "react";
-import { patch } from "./ClonerActionSheet";
+import { getModule, React } from "aliucord/metro";
+import { findInReactTree } from "aliucord/utils";
 import { GrabberButtons } from "./GrabberButtons";
 
-const { FormDivider } = Forms;
-const LazyActionSheet = getByProps("openLazy", "hideActionSheet");
+const MessageEmojiActionSheetModule = getModule(x => x.GuildDetails && typeof x.default === "function");
 
 export default class EmoteGrabber extends Plugin {
-    private static _instance;
-    static get instance() { return EmoteGrabber._instance; }
+    start() {
+        this.patcher.after(MessageEmojiActionSheetModule, "default", (_, component: any, { emojiNode }) => {
+            if (!emojiNode.src) return;
 
-    public start() {
-        EmoteGrabber._instance = this;
-        patch(this.patcher);
+            const emojiDetails = findInReactTree(component, x => x?.props?.emojiNode);
+            if (!emojiDetails) return;
 
-        this.patcher.before(LazyActionSheet, "openLazy", (ctx) => {
-            const [component, sheet] = ctx.args;
+            const unpatch = this.patcher.after(emojiDetails, "type", (_, component: any, { emojiNode }) => {
+                React.useEffect(() => unpatch, []);
 
-            if (sheet !== "MessageEmojiActionSheet") return;
+                const buttonView = component.props?.children?.[3]?.props?.children;
+                if (buttonView) {
+                    buttonView.push(<GrabberButtons emojiNode={emojiNode} />);
+                    return;
+                }
 
-            component.then(instance => {
-                this.patcher.after(instance, "default", (_, component: any, { emojiNode }) => {
-                    if (!emojiNode.src) return;
+                const unjoinedButtonViewIndex = component.props?.children.findIndex(
+                    x => x?.type?.name === "Button"
+                );
 
-                    const EmoteInfo = component?.props?.children?.props?.children?.props?.children;
-
-                    if (EmoteInfo) {
-                        this.patcher.after(EmoteInfo, "type", (_, component: any, { emojiNode }) => {
-                            const last = component.props?.children[component.props.children.length - 1];
-
-                            if (!last || last.key !== "emoteGrabber") {
-                                component.props.children.push(<Fragment key="emoteGrabber" />);
-
-                                const buttonView = component.props?.children[3]?.props?.children;
-                                if (buttonView) {
-                                    buttonView.push(<GrabberButtons emojiNode={emojiNode} />);
-                                    return;
-                                }
-
-                                const unjoinedButtonView = component.props?.children.findIndex(x => x?.type?.name === "Button");
-
-                                if (unjoinedButtonView !== -1) {
-                                    component.props?.children?.splice(unjoinedButtonView + 1, 0, <GrabberButtons emojiNode={emojiNode} />);
-                                    return;
-                                }
-
-                                component.props?.children?.splice(-2, 0, <>
-                                    <FormDivider />
-                                    <GrabberButtons emojiNode={emojiNode} />
-                                </>);
-                            }
-                        });
-                    }
-                });
+                component.props?.children?.splice?.(
+                    -~unjoinedButtonViewIndex || -2,
+                    0,
+                    <GrabberButtons emojiNode={emojiNode} />
+                );
             });
         });
     }
