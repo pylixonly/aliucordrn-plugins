@@ -13,6 +13,9 @@ Loads [Vendetta](https://github.com/vendetta-mod/Vendetta) as an AliucordRN plug
 ### [PluginDownloader](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/PluginDownloader.zip)
 A temporary plugin that downloads and installs AliucordRN plugins.
 
+### [NoAutoReplyMention](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/NoAutoReplyMention.zip)
+Turns off auto mention when replying by default.
+
 ### [MoarConfirm](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/MoarConfirm.zip)
 Prompt confirmations for irreversible actions before you regret.
 
@@ -22,9 +25,9 @@ Don't idle when Discord is running in the background.
 ### [HideGiftButton](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/HideGiftButton.zip)
 Hides the gift button next to chat input.
 
-### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip) (currently half broken)
-Grab emote's link or clone them to your server. Currently can't clone emotes.\
-Huge thanks to Fiery (from his Enmity's [@FierysDiscordAddons/Stealmoji](https://github.com/FierysDiscordAddons/Stealmoji) plugin)
+### [EmoteGrabber](https://github.com/amsyarasyiq/aliucordrn-plugins/raw/builds/EmoteGrabber.zip)
+Grab emote's link or clone them to your server.\
+Huge thanks to Fiery from his Enmity's [@FierysDiscordAddons/Stealmoji](https://github.com/FierysDiscordAddons/Stealmoji) plugin.
 
 <details>
 <summary>Deprecated plugins</summary>
